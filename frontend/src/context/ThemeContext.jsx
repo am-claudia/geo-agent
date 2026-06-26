@@ -3,7 +3,7 @@
 const ThemeContext = createContext({ theme: 'dark', toggleTheme: () => {} });
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => localStorage.getItem('geo-theme') || 'dark');
+  const [theme, setTheme] = useState(() => localStorage.getItem('geo-theme') || 'light');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);

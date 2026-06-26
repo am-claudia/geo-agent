@@ -125,6 +125,22 @@ export default function ScoreTab({ geoAudit }) {
 
   return (
     <div className={styles.page}>
+      {/* Contextual explanation */}
+      <div className={styles.explainer}>
+        <p className={styles.explainerText}>
+          The <strong>GEO Score</strong> (0-10) measures how likely AI systems like <strong>ChatGPT, Perplexity, and Google AI Overviews</strong> are to cite this page as a source. It is calculated across 7 criteria:
+        </p>
+        <ul className={styles.criteriaList}>
+          <li className={styles.criteriaListItem}><strong>Quotability:</strong> Does the page contain clear, citable statements, statistics, or definitions that AI can lift verbatim?</li>
+          <li className={styles.criteriaListItem}><strong>Authority and Credibility:</strong> Does the page signal expertise through credentials, data sources, or author information?</li>
+          <li className={styles.criteriaListItem}><strong>Q&amp;A Format:</strong> Does the page directly answer questions the way users phrase them to AI?</li>
+          <li className={styles.criteriaListItem}><strong>Structural Clarity:</strong> Are headings, sections, and content organized so AI can parse and extract key points?</li>
+          <li className={styles.criteriaListItem}><strong>Comprehensiveness:</strong> Does the page cover the topic thoroughly enough to be the definitive source?</li>
+          <li className={styles.criteriaListItem}><strong>Semantic Clarity:</strong> Is the language precise and free of ambiguity, making it easy for AI to interpret?</li>
+          <li className={styles.criteriaListItem}><strong>Freshness Signals:</strong> Does the page indicate recent publication or updates that signal relevance?</li>
+        </ul>
+      </div>
+
       {/* Gauge + summary */}
       <div className={styles.topRow}>
         <GaugeCircle score={overall_score} />
@@ -156,7 +172,7 @@ export default function ScoreTab({ geoAudit }) {
                     <span className={styles.listX}>✗</span>
                     <span>
                       <strong>{CRITERIA_LABELS[w.criterion] || w.criterion}</strong>
-                      {w.feedback && <> — {w.feedback}</>}
+                      {w.feedback && <>: {w.feedback}</>}
                     </span>
                   </li>
                 ))}

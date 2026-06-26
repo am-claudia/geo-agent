@@ -60,7 +60,7 @@ export default function InputForm({ onSubmit }) {
         </h1>
 
         <p className={styles.subheading}>
-          Run a deep 5-agent audit. Find out exactly why AI systems skip your page —
+          Run a deep 5-agent audit. Find out exactly why AI systems skip your page,
           and get targeted rewrites to fix it.
         </p>
 

@@ -5,22 +5,27 @@
   min-height: calc(100vh - 60px);
 }
 
-/* ─── Persistent header ─── */
-.header {
+/* ─── Sticky chrome wrapper (header + tab bar combined) ─── */
+.chrome {
   position: sticky;
   top: 60px;
   z-index: 100;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: background var(--transition);
+}
+
+/* ─── Persistent header ─── */
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
   padding: 12px 32px;
-  background: var(--navbar-bg);
   border-bottom: 1px solid var(--navbar-border);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  transition: background var(--transition), border-color var(--transition);
+  transition: border-color var(--transition);
 }
 
 .headerLeft {
@@ -138,9 +143,6 @@
 
 /* ─── Tab bar ─── */
 .tabBar {
-  position: sticky;
-  top: calc(60px + 57px);
-  z-index: 90;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
   transition: background var(--transition), border-color var(--transition);

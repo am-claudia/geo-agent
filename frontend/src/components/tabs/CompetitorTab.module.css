@@ -11,11 +11,56 @@
   padding: 60px 0;
 }
 
+/* ─── Explainer block ─── */
+.explainer {
+  background: var(--accent-dim);
+  border: 1px solid var(--border-mid);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  transition: all var(--transition);
+}
+
+.explainerRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.explainerItem {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.explainerIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.explainerTitle {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 4px;
+  transition: color var(--transition);
+}
+
+.explainerDesc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  transition: color var(--transition);
+}
+
 /* ─── Section ─── */
 .section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .sectionTitle {
@@ -26,6 +71,19 @@
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
   transition: color var(--transition), border-color var(--transition);
+}
+
+.sectionHint {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-top: -4px;
+  transition: color var(--transition);
+}
+
+.sectionHint strong {
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 /* ─── Landscape summary ─── */
@@ -68,66 +126,123 @@
   transition: all var(--transition);
 }
 
-/* ─── Grid ─── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-}
-
-/* ─── Competitor card ─── */
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+/* ─── Competitor table ─── */
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
   border-radius: var(--radius-lg);
-  padding: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: var(--shadow-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  transition: all 0.25s ease;
+  transition: all var(--transition);
 }
 
-.card:hover {
-  border-color: var(--border-mid);
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-2px);
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
-.cardHeader {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+.thead tr {
+  background: var(--accent-dim);
+  border-bottom: 1px solid var(--border-mid);
 }
 
-.rank {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+.thRank {
+  width: 48px;
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+
+.thDomain {
+  width: 22%;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+
+.thSignal {
+  width: 28%;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+
+.thStrengths {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+
+/* ─── Table rows ─── */
+.row {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s ease;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: var(--bg-card-hover);
+}
+
+.tdRank {
+  padding: 14px 12px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.rankBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--accent-dim);
   border: 1px solid var(--border-mid);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--accent-text);
   transition: all var(--transition);
 }
 
-.domainWrap {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.tdDomain {
+  padding: 14px 14px;
+  vertical-align: top;
 }
 
-.domain {
-  font-size: 0.92rem;
+.domainCell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.domainName {
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-bright);
   letter-spacing: -0.01em;
@@ -135,103 +250,88 @@
 }
 
 .pageTitle {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: var(--text-secondary);
+  line-height: 1.35;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   transition: color var(--transition);
 }
 
 .visitLink {
-  flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-text);
+  margin-top: 4px;
+  text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .visitLink:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-dim);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
-/* ─── Key differentiator ─── */
-.keyDiff {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 10px 12px;
-  background: var(--accent-dim);
-  border: 1px solid var(--border-mid);
-  border-radius: var(--radius-md);
-  transition: all var(--transition);
+/* ─── Signal cell ─── */
+.tdSignal {
+  padding: 14px 14px;
+  vertical-align: top;
 }
 
-.keyDiffBadge {
-  flex-shrink: 0;
-  font-size: 0.62rem;
+.signalBadge {
+  display: block;
+  font-size: 0.83rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--accent-text);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border-mid);
-  background: var(--bg-card);
-  margin-top: 1px;
-  transition: all var(--transition);
-}
-
-.keyDiffText {
-  font-size: 0.82rem;
-  color: var(--text-primary);
+  color: var(--text-bright);
+  margin-bottom: 5px;
   line-height: 1.4;
   transition: color var(--transition);
 }
 
-/* ─── Why cited ─── */
 .whyCited {
-  font-size: 0.83rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  font-style: italic;
-  transition: color var(--transition);
-}
-
-/* ─── GEO strengths ─── */
-.strengths {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.strengthItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
   font-size: 0.82rem;
   color: var(--text-primary);
-  line-height: 1.45;
+  line-height: 1.55;
   transition: color var(--transition);
 }
 
-.strengthBullet {
-  color: var(--score-great);
-  font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 1px;
+/* ─── Strengths cell ─── */
+.tdStrengths {
+  padding: 14px 14px;
+  vertical-align: top;
 }
 
-/* ─── Gaps ─── */
+.tagsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.strengthTag {
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--score-great) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--score-great) 32%, transparent);
+  color: var(--score-great);
+  line-height: 1.3;
+  transition: all var(--transition);
+}
+
+.moreTag {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  padding: 3px 6px;
+  transition: color var(--transition);
+}
+
+/* ─── Gap opportunities ─── */
 .gaps {
   display: flex;
   flex-direction: column;
@@ -274,6 +374,13 @@
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 600px) {
-  .grid { grid-template-columns: 1fr; }
+@media (max-width: 700px) {
+  .explainerRow { grid-template-columns: 1fr; gap: 14px; }
+  .table { table-layout: auto; }
+  .thSignal, .tdSignal { display: none; }
+  .thDomain { width: auto; }
+}
+
+@media (max-width: 480px) {
+  .thStrengths, .tdStrengths { display: none; }
 }

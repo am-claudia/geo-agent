@@ -12,6 +12,51 @@
   padding: 60px 0;
 }
 
+/* ─── Explainer block ─── */
+.explainer {
+  background: var(--accent-dim);
+  border: 1px solid var(--border-mid);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--transition);
+}
+
+.explainerText {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.65;
+  transition: color var(--transition);
+}
+
+.explainerText strong {
+  color: var(--text-bright);
+  font-weight: 700;
+}
+
+.criteriaList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 4px;
+}
+
+.criteriaListItem {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  transition: color var(--transition);
+}
+
+.criteriaListItem strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
 /* ─── Top row: gauge + summary ─── */
 .topRow {
   display: flex;

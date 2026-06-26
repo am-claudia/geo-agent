@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 24px 80px;
+  padding: 20px 24px;
   position: relative;
   overflow: hidden;
 }
@@ -45,19 +45,19 @@
   border: 1px solid var(--border-mid);
   padding: 5px 14px;
   border-radius: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
   background: var(--accent-dim);
   transition: all var(--transition);
 }
 
 /* ─── Heading ─── */
 .heading {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(1.8rem, 3.8vw, 2.6rem);
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -0.03em;
   color: var(--text-bright);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   transition: color var(--transition);
 }
 
@@ -66,11 +66,11 @@
 }
 
 .subheading {
-  font-size: 1.05rem;
+  font-size: 0.97rem;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.6;
   max-width: 500px;
-  margin-bottom: 32px;
+  margin-bottom: 14px;
   transition: color var(--transition);
 }
 
@@ -80,18 +80,18 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  margin-bottom: 40px;
+  margin-bottom: 16px;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
 }
 
 .statNum {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--accent);
   line-height: 1;
@@ -107,7 +107,7 @@
 
 .statDivider {
   width: 1px;
-  height: 28px;
+  height: 22px;
   background: var(--border-mid);
 }
 
@@ -117,7 +117,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border-mid);
   border-radius: var(--radius-xl);
-  padding: 36px;
+  padding: 22px 28px;
   box-shadow: var(--shadow-card), var(--shadow-glow);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -129,7 +129,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .field {
@@ -180,7 +180,7 @@
   width: 100%;
   background: transparent;
   border: none;
-  padding: 13px 16px 13px 40px;
+  padding: 10px 16px 10px 40px;
   color: var(--text-bright);
   font-family: var(--font-sans);
   font-size: 0.95rem;
@@ -219,7 +219,7 @@
   color: #000e1a;
   border: none;
   border-radius: var(--radius-md);
-  padding: 15px 28px;
+  padding: 11px 28px;
   font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 700;
@@ -259,8 +259,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-top: 28px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .pipelineLabel {
@@ -305,8 +305,8 @@
 
 /* ─── Responsive ─── */
 @media (max-width: 480px) {
-  .page { padding: 40px 16px 60px; }
-  .card { padding: 24px 20px; }
+  .page { padding: 16px; }
+  .card { padding: 18px 16px; }
   .stats { gap: 16px; }
   .pipelineAgents { gap: 6px; }
   .pipelineArrow { display: none; }

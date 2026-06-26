@@ -210,7 +210,7 @@ export default function AgentPipeline({ displayStatuses, agentData, error, url, 
 
       {/* Footer hint */}
       <p className={styles.footer}>
-        Each agent runs in sequence — results will appear when all 5 complete.
+        Each agent runs in sequence. Results will appear when all 5 complete.
       </p>
     </div>
   );

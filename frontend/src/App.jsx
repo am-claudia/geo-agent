@@ -208,7 +208,6 @@ function AppContent() {
       <nav className={styles.navbar}>
         <div className={styles.navBrand}>
           <span className={styles.navLogo}>◈ GEO<span className={styles.navAccent}>Agent</span></span>
-          <span className={styles.navPill}>Multi-Agent · AI-Powered</span>
         </div>
         <button
           className={styles.themeToggle}

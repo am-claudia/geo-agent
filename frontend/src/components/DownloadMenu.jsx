@@ -268,7 +268,7 @@ async function exportPDF(results, url, topic, score) {
       y += aLines.length * 5 + 1;
       if (item.implementation) body(item.implementation, 9, GRAY);
       if (item.effort || item.timeline) {
-        small(`Effort: ${item.effort || '—'} · Timeline: ${item.timeline || '—'}`);
+        small(`Effort: ${item.effort || 'N/A'} · Timeline: ${item.timeline || 'N/A'}`);
       }
       y += 4;
     }

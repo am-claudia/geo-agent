@@ -10,7 +10,7 @@ function StatCard({ label, value, icon, delay = 0 }) {
       transition={{ duration: 0.4, delay }}
     >
       <span className={styles.statIcon}>{icon}</span>
-      <span className={styles.statValue}>{value ?? '—'}</span>
+      <span className={styles.statValue}>{value ?? 'N/A'}</span>
       <span className={styles.statLabel}>{label}</span>
     </motion.div>
   );
@@ -35,6 +35,19 @@ export default function ContentTab({ parsedContent }) {
 
   return (
     <div className={styles.page}>
+      {/* Contextual explanation */}
+      <div className={styles.explainer}>
+        <p className={styles.explainerText}>
+          This tab shows the <strong>raw structural signals</strong> that AI systems read when deciding whether to trust and cite a page. These numbers matter because AI doesn't just read your content; it scans for signals of quality and organization.
+        </p>
+        <ul className={styles.explainerList}>
+          <li><strong>Word Count:</strong> Longer, more comprehensive content tends to score higher. AI prefers pages that cover a topic fully. Aim for 1,500+ words on competitive topics.</li>
+          <li><strong>Heading Structure (H1/H2/H3):</strong> Clear headings help AI parse your content into sections it can cite individually. One H1, multiple H2s, and optional H3 sub-sections is the ideal pattern.</li>
+          <li><strong>Schema Markup:</strong> Structured data tells AI systems exactly what your page is about. Pages with schema are far more likely to appear in AI-generated answers.</li>
+          <li><strong>FAQ Section:</strong> A dedicated FAQ signals that your page directly answers questions, which is exactly how people prompt AI tools. This is one of the highest-impact GEO signals you can add.</li>
+        </ul>
+      </div>
+
       {/* Stats row */}
       <div className={styles.statsGrid}>
         <StatCard label="Word Count"    value={wordCount?.toLocaleString()} icon="📝" delay={0} />
@@ -56,7 +69,7 @@ export default function ContentTab({ parsedContent }) {
         <div className={styles.details}>
           <div className={styles.detailRow}>
             <span className={styles.detailKey}>Page Title</span>
-            <span className={styles.detailVal}>{title || '—'}</span>
+            <span className={styles.detailVal}>{title || 'N/A'}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailKey}>Meta Description</span>

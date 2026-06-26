@@ -72,6 +72,9 @@
 
 /* ─── Light theme ─── */
 :root[data-theme="light"] {
+  --score-great: #00875a;
+  --success:     #00875a;
+
   --bg-base:        #f8fafc;
   --bg-surface:     #ffffff;
   --bg-card:        #ffffff;
@@ -125,7 +128,7 @@ body {
   background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
   background-size: 24px 24px;
   transition: background-color var(--transition), color var(--transition);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 #root {

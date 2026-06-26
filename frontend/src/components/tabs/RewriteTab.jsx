@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './RewriteTab.module.css';
 
+function boldNumbers(text) {
+  if (!text) return null;
+  return text.split(/(\b\d+(?:\.\d+)?[%x]?\b)/).map((part, i) =>
+    /^\d+(?:\.\d+)?[%x]?$/.test(part) ? <strong key={i}>{part}</strong> : part
+  );
+}
+
 function RewriteItem({ rewrite, index }) {
   const [expanded, setExpanded] = useState(true);
 
@@ -22,7 +29,6 @@ function RewriteItem({ rewrite, index }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
     >
-      {/* Header */}
       <button
         className={styles.itemHeader}
         onClick={() => setExpanded(e => !e)}
@@ -47,7 +53,6 @@ function RewriteItem({ rewrite, index }) {
         </svg>
       </button>
 
-      {/* Content */}
       <AnimatePresence initial={false}>
         {expanded && (
           <motion.div
@@ -57,7 +62,6 @@ function RewriteItem({ rewrite, index }) {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className={styles.itemBody}
           >
-            {/* Before / After panels */}
             <div className={styles.panels}>
               <div className={`${styles.panel} ${styles.panelBefore}`}>
                 <div className={styles.panelLabel}>
@@ -83,15 +87,13 @@ function RewriteItem({ rewrite, index }) {
               </div>
             </div>
 
-            {/* Why better */}
             {why_better && (
               <div className={styles.whyBetter}>
                 <span className={styles.whyLabel}>Why this works:</span>
-                <span className={styles.whyText}>{why_better}</span>
+                <span className={styles.whyText}>{boldNumbers(why_better)}</span>
               </div>
             )}
 
-            {/* GEO signals */}
             {geo_signals_added.length > 0 && (
               <div className={styles.signals}>
                 <span className={styles.signalsLabel}>GEO signals added:</span>
@@ -143,7 +145,101 @@ function QuickWin({ win, index }) {
   );
 }
 
-export default function RewriteTab({ rewrites }) {
+function generateLLMPrompt(rewrites, geoAudit, url, topic) {
+  const score = geoAudit?.overall_score;
+  const weaknesses = geoAudit?.top_weaknesses || [];
+  const items = rewrites?.rewrites || [];
+
+  const weaknessList = weaknesses.length > 0
+    ? weaknesses.map(w => {
+        const label = w.criterion.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        return `- ${label}: ${w.feedback || 'needs improvement'}`;
+      }).join('\n')
+    : '- See audit results for specific weaknesses';
+
+  const rewriteAreas = items.length > 0
+    ? items.map(r => r.weakness_label || r.weakness_addressed).filter(Boolean).join(', ')
+    : 'all content sections';
+
+  return `You are a content expert specializing in Generative Engine Optimization (GEO). I need you to rewrite the content on this page so it is more likely to be cited by AI systems like ChatGPT, Perplexity, and Google AI Overviews.
+
+Page: ${url || '[paste your URL]'}
+Topic: ${topic || '[your topic]'}
+Current GEO Score: ${score != null ? `${score}/10` : 'see audit'}
+
+Key weaknesses to address:
+${weaknessList}
+
+Specific sections needing rewriting: ${rewriteAreas}
+
+Please rewrite the content with these GEO improvements:
+1. Add quotable, specific statements with concrete data points and statistics that AI can cite verbatim.
+2. Include a Q&A section that directly answers questions users ask AI about this topic.
+3. Strengthen authority signals: add credentials, cite sources, use precise expert language.
+4. Improve structural clarity: use clear H2 and H3 headings organized by sub-topic.
+5. Ensure comprehensive coverage so this page is the definitive source on the topic.
+6. Add a brief definition or summary at the top that AI can use as a direct answer.
+
+Keep the core message and facts of the original content. Focus on making each section standalone and citable. The goal is for AI to confidently reference this page as a trusted source.`;
+}
+
+function LLMPromptBlock({ rewrites, geoAudit, url, topic }) {
+  const [copied, setCopied] = useState(false);
+  const prompt = generateLLMPrompt(rewrites, geoAudit, url, topic);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(prompt).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <motion.div
+      className={styles.promptBlock}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.2 }}
+    >
+      <div className={styles.promptHeader}>
+        <div className={styles.promptTitleGroup}>
+          <span className={styles.promptIcon}>🤖</span>
+          <div>
+            <h2 className={styles.promptTitle}>Prompt for your LLM</h2>
+            <p className={styles.promptSubtitle}>
+              Paste this into <strong>any LLM</strong> (ChatGPT, Gemini, Claude, and more) to rewrite your full page based on these audit findings.
+            </p>
+          </div>
+        </div>
+        <button
+          className={`${styles.copyBtn} ${copied ? styles.copyBtnDone : ''}`}
+          onClick={handleCopy}
+          aria-label="Copy prompt to clipboard"
+        >
+          {copied ? (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Copied
+            </>
+          ) : (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy prompt
+            </>
+          )}
+        </button>
+      </div>
+      <pre className={styles.promptText}>{prompt}</pre>
+    </motion.div>
+  );
+}
+
+export default function RewriteTab({ rewrites, geoAudit, url, topic }) {
   if (!rewrites) {
     return <div className={styles.empty}>Rewrite data not available.</div>;
   }
@@ -152,6 +248,26 @@ export default function RewriteTab({ rewrites }) {
 
   return (
     <div className={styles.page}>
+      {/* Contextual explanation */}
+      <div className={styles.explainer}>
+        <div className={styles.explainerRow}>
+          <div className={styles.explainerItem}>
+            <span className={styles.explainerIcon}>✍️</span>
+            <div>
+              <strong className={styles.explainerTitle}>Before / After rewrites</strong>
+              <p className={styles.explainerDesc}>AI-generated rewrites for the specific sections hurting your GEO score. Each one targets a weakness from the audit and shows exactly what optimized content looks like.</p>
+            </div>
+          </div>
+          <div className={styles.explainerItem}>
+            <span className={styles.explainerIcon}>🤖</span>
+            <div>
+              <strong className={styles.explainerTitle}>Full-page rewrite prompt</strong>
+              <p className={styles.explainerDesc}>At the bottom: a ready-to-use prompt you can paste into <strong>any LLM</strong> (ChatGPT, Gemini, Claude, and more) to rewrite your entire page in one shot.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main rewrites */}
       {items.length > 0 ? (
         <div className={styles.section}>
@@ -185,6 +301,12 @@ export default function RewriteTab({ rewrites }) {
           </div>
         </motion.div>
       )}
+
+      {/* LLM prompt section */}
+      <div className={styles.section}>
+        <h2 className={styles.sectionTitle}>Full-Page Rewrite Prompt</h2>
+        <LLMPromptBlock rewrites={rewrites} geoAudit={geoAudit} url={url} topic={topic} />
+      </div>
     </div>
   );
 }

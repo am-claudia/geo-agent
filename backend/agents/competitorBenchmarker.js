@@ -12,35 +12,71 @@ Your analysis is specific and tactical — marketing teams use this to know exac
 Respond only with valid JSON. No markdown code fences.`;
 
 async function serperSearch(query) {
+  const url = 'https://google.serper.dev/search';
+  const body = { q: query, num: 10, gl: 'us', hl: 'en' };
+  const apiKey = process.env.SERPER_API_KEY;
+  const keyPreview = apiKey ? apiKey.slice(0, 8) + '...' : '(not set)';
+
+  console.log(`\n[Serper] ── REQUEST ──────────────────────────────`);
+  console.log(`[Serper] Query    : "${query}"`);
+  console.log(`[Serper] URL      : POST ${url}`);
+  console.log(`[Serper] Headers  : { 'X-API-KEY': '${keyPreview}', 'Content-Type': 'application/json' }`);
+  console.log(`[Serper] Body     :`, JSON.stringify(body));
+
   try {
-    const res = await axios.post(
-      'https://google.serper.dev/search',
-      { q: query, num: 10, gl: 'us', hl: 'en' },
-      {
-        headers: {
-          'X-API-KEY': process.env.SERPER_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        timeout: 12000,
-      }
-    );
+    const res = await axios.post(url, body, {
+      headers: {
+        'X-API-KEY': apiKey,
+        'Content-Type': 'application/json',
+      },
+      timeout: 12000,
+    });
+
+    console.log(`[Serper] ── RESPONSE ─────────────────────────────`);
+    console.log(`[Serper] Status   : ${res.status} ${res.statusText}`);
+    console.log(`[Serper] Raw body :`, JSON.stringify(res.data, null, 2));
+
     return res.data;
   } catch (err) {
-    console.warn(`[Serper] Search failed for "${query}":`, err.message);
+    console.error(`[Serper] ── ERROR ───────────────────────────────`);
+    console.error(`[Serper] Message  :`, err.message);
+    if (err.response) {
+      console.error(`[Serper] Status   : ${err.response.status} ${err.response.statusText}`);
+      console.error(`[Serper] Body     :`, JSON.stringify(err.response.data, null, 2));
+    } else {
+      console.error(`[Serper] No HTTP response received (network/timeout error)`);
+    }
     return { organic: [] };
   }
 }
 
 export async function benchmarkCompetitors(topic) {
+  console.log(`\n[CompetitorBenchmarker] ══ START ══════════════════════════`);
+  console.log(`[CompetitorBenchmarker] Topic: "${topic}"`);
+  console.log(`[CompetitorBenchmarker] SERPER_API_KEY set: ${!!process.env.SERPER_API_KEY}`);
+  console.log(`[CompetitorBenchmarker] GROQ_API_KEY set  : ${!!process.env.GROQ_API_KEY}`);
+
   const queries = [
     `${topic} comprehensive guide`,
     `${topic} according to experts research`,
     `${topic} statistics data study`,
   ];
 
+  console.log(`\n[CompetitorBenchmarker] ── Built ${queries.length} search queries:`);
+  queries.forEach((q, i) => console.log(`[CompetitorBenchmarker]   [${i + 1}] "${q}"`));
+
   const searchResults = await Promise.allSettled(queries.map(q => serperSearch(q)));
 
-  // Deduplicate and collect top organic results
+  console.log(`\n[CompetitorBenchmarker] ── Serper results settled:`);
+  searchResults.forEach((r, i) => {
+    if (r.status === 'fulfilled') {
+      const organicCount = r.value?.organic?.length ?? 0;
+      console.log(`[CompetitorBenchmarker]   Query ${i + 1}: fulfilled — ${organicCount} organic results`);
+    } else {
+      console.log(`[CompetitorBenchmarker]   Query ${i + 1}: rejected — ${r.reason}`);
+    }
+  });
+
   const seen = new Set();
   const allResults = [];
 
@@ -61,9 +97,15 @@ export async function benchmarkCompetitors(topic) {
     }
   }
 
+  console.log(`\n[CompetitorBenchmarker] ── Deduplication complete:`);
+  console.log(`[CompetitorBenchmarker]   Total unique results: ${allResults.length}`);
+  allResults.forEach((r, i) => console.log(`[CompetitorBenchmarker]   [${i + 1}] ${r.domain} | pos:${r.position} | ${r.url}`));
+
   const topResults = allResults.slice(0, 15);
+  console.log(`[CompetitorBenchmarker]   Top ${topResults.length} selected for LLM analysis`);
 
   if (topResults.length === 0) {
+    console.warn(`[CompetitorBenchmarker] No results found — returning fallback. Check Serper API key and quota.`);
     return {
       competitors: [],
       landscape_summary: 'No competitor data available — Serper API may be rate-limited.',
@@ -117,8 +159,12 @@ Return ONLY this JSON:
   });
   const raw = completion.choices[0].message.content.trim();
 
+  console.log(`\n[CompetitorBenchmarker] ── LLM raw response (first 500 chars):`);
+  console.log(raw.slice(0, 500));
+
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
+    console.warn(`[CompetitorBenchmarker] JSON parse failed — no JSON object found in LLM response. Using fallback.`);
     return {
       competitors: topResults.slice(0, 3).map(r => ({
         url: r.url,
@@ -134,5 +180,13 @@ Return ONLY this JSON:
     };
   }
 
-  return JSON.parse(jsonMatch[0]);
+  const parsed = JSON.parse(jsonMatch[0]);
+  console.log(`\n[CompetitorBenchmarker] ── Extracted data returned to orchestrator:`);
+  console.log(`[CompetitorBenchmarker]   competitors         : ${parsed.competitors?.length ?? 0} items`);
+  console.log(`[CompetitorBenchmarker]   gap_opportunities   : ${parsed.gap_opportunities?.length ?? 0} items`);
+  console.log(`[CompetitorBenchmarker]   dominant_content_types: ${JSON.stringify(parsed.dominant_content_types)}`);
+  console.log(`[CompetitorBenchmarker]   landscape_summary   : "${(parsed.landscape_summary || '').slice(0, 100)}..."`);
+  console.log(`[CompetitorBenchmarker] ══ END ════════════════════════════════════\n`);
+
+  return parsed;
 }
