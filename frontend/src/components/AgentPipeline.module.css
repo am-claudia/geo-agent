@@ -1,0 +1,363 @@
+/* ─── Page layout ─── */
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 40px 24px 80px;
+  gap: 0;
+}
+
+/* ─── Header ─── */
+.header {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  transition: color var(--transition);
+}
+
+.statusDotLive {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.progressLabel {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--transition);
+}
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  word-break: break-all;
+  transition: color var(--transition);
+}
+
+.metaDivider {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* ─── Progress bar ─── */
+.progressTrack {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+  transition: background var(--transition);
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent-glow);
+  transition: width 0.6s ease;
+}
+
+/* ─── Pipeline ─── */
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cardRow {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Connector line ─── */
+.connector {
+  width: 2px;
+  height: 20px;
+  background: var(--border);
+  margin-left: 44px;
+  transition: background 0.5s ease;
+}
+
+.connectorActive {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+/* ─── Agent card ─── */
+.card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.cardWaiting {
+  opacity: 0.45;
+}
+
+.cardRunning {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-active);
+  opacity: 1;
+  animation: glow 2.5s ease-in-out infinite;
+}
+
+.cardDone {
+  border-color: rgba(0, 229, 153, 0.25);
+  opacity: 0.85;
+}
+
+.cardError {
+  border-color: rgba(255, 68, 102, 0.3);
+  opacity: 1;
+}
+
+/* ─── Card index ─── */
+.cardIndex {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--transition);
+}
+
+/* ─── Icon ─── */
+.iconWrap {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--accent-dim);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.iconActive {
+  border-color: var(--border-mid);
+  background: rgba(0, 212, 255, 0.15);
+  box-shadow: 0 0 16px var(--accent-dim);
+}
+
+.icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+/* ─── Card content ─── */
+.cardContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.agentName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  transition: color var(--transition);
+}
+
+.agentDesc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  transition: color var(--transition);
+}
+
+.agentMsg {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  color: var(--accent-text);
+  margin-top: 6px;
+  font-style: italic;
+  transition: color var(--transition);
+}
+
+.agentMsgDone {
+  color: var(--score-great);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.agentMsgError {
+  color: var(--danger);
+  font-style: normal;
+}
+
+.msgSpinner {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--accent-dim);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ─── Status indicators ─── */
+.statusWaiting {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-mid);
+  flex-shrink: 0;
+  transition: border-color var(--transition);
+}
+
+.statusRunning {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.runningDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.runningDot:nth-child(2) { animation-delay: 0.2s; }
+.runningDot:nth-child(3) { animation-delay: 0.4s; }
+
+.statusDone {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--score-great);
+  color: #001a0e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statusError {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ─── Shimmer overlay (running state) ─── */
+.shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(0, 212, 255, 0.04) 50%,
+    transparent 100%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 2s infinite linear;
+  pointer-events: none;
+}
+
+/* ─── Error box ─── */
+.errorBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(255, 68, 102, 0.08);
+  border: 1px solid rgba(255, 68, 102, 0.3);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-top: 24px;
+  font-size: 0.88rem;
+  color: var(--danger);
+}
+
+.errorBox strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.errorBox p {
+  color: var(--text-secondary);
+}
+
+/* ─── Footer ─── */
+.footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  transition: color var(--transition);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+  .page { padding: 24px 16px 60px; }
+  .connector { margin-left: 36px; }
+  .iconWrap { width: 36px; height: 36px; }
+  .icon { font-size: 1.1rem; }
+}

@@ -1,0 +1,228 @@
+.wrapper {
+  padding: 40px 0 0;
+  animation: fadeIn 0.4s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: -0.01em;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progressBar {
+  width: 140px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #0099cc);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.progressLabel {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── Pipeline ────────────────────────────────────────────────────────────── */
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.parallelGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  position: relative;
+}
+
+.parallelLabel {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--bg-base);
+  padding: 0 8px;
+}
+
+.connector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  margin: 4px 0;
+}
+
+.connectorLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.connectorLabel {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.arrow {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 6px 0;
+  font-size: 1rem;
+}
+
+/* ── Agent Card ──────────────────────────────────────────────────────────── */
+.card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  transition: var(--transition);
+}
+
+.card_running {
+  border-color: var(--border-bright);
+  box-shadow: 0 0 12px var(--accent-dim);
+}
+
+.card_complete {
+  border-color: rgba(0, 229, 153, 0.25);
+}
+
+.card_error {
+  border-color: rgba(255, 68, 102, 0.3);
+}
+
+.cardLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.agentNum {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.agentIcon {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+.card_running .agentIcon { color: var(--accent); }
+.card_complete .agentIcon { color: var(--success); }
+.card_error .agentIcon { color: var(--danger); }
+
+.cardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.agentName {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 3px;
+}
+
+.agentDesc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.previewChip {
+  font-size: 0.72rem;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.cardRight {
+  flex-shrink: 0;
+}
+
+/* ── Status Badge ─────────────────────────────────────────────────────────── */
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.statusIdle    { color: var(--text-dim);       background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
+.statusRunning { color: var(--accent);          background: var(--accent-dim);      border: 1px solid var(--border-mid); }
+.statusComplete{ color: var(--success);         background: rgba(0,229,153,0.08);   border: 1px solid rgba(0,229,153,0.2); }
+.statusError   { color: var(--danger);          background: rgba(255,68,102,0.08);  border: 1px solid rgba(255,68,102,0.2); }
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotIdle     { background: var(--text-dim); }
+.dotRunning  { background: var(--accent); animation: pulse-dot 1.2s ease infinite; }
+.dotComplete { background: var(--success); }
+.dotError    { background: var(--danger); }

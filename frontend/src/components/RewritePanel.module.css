@@ -1,0 +1,250 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Rewrite Item ────────────────────────────────────────────────────────── */
+.rewriteItem {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.rewriteHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rewriteMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rewriteNum {
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.rewriteWeakness {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.rewriteScore {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+.rewriteContext {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ── Before / After ──────────────────────────────────────────────────────── */
+.beforeAfter {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.betweenArrow {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  padding-top: 36px;
+  text-align: center;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panelLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.panelLabelBefore { color: var(--danger); }
+.panelLabelAfter  { color: var(--success); }
+
+.panelDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.panelText {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-style: normal;
+  border-left: 3px solid;
+}
+
+.panelTextBefore {
+  background: rgba(255, 68, 102, 0.06);
+  border-color: rgba(255, 68, 102, 0.3);
+  color: var(--text-secondary);
+}
+
+.panelTextAfter {
+  background: rgba(0, 229, 153, 0.06);
+  border-color: rgba(0, 229, 153, 0.3);
+  color: var(--text-primary);
+}
+
+/* ── Why Better ──────────────────────────────────────────────────────────── */
+.whyBetter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.whyBetterLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.whyBetterText {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+
+/* ── GEO Signals ─────────────────────────────────────────────────────────── */
+.signals {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.signalsLabel {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 4px;
+}
+
+.signalTag {
+  font-size: 0.73rem;
+  color: var(--success);
+  background: rgba(0, 229, 153, 0.08);
+  border: 1px solid rgba(0, 229, 153, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* ── Quick Wins ──────────────────────────────────────────────────────────── */
+.quickWins {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.quickWinsTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quickWinsList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.quickWin {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.quickWin:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.quickWinHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.quickWinAction {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.quickWinBadges {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quickWinExample {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .beforeAfter {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .betweenArrow {
+    display: none;
+  }
+}

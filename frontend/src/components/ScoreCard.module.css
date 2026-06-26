@@ -1,0 +1,106 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ── Gauge + Strengths ──────────────────────────────────────────────────── */
+.gaugeSection {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.gauge {
+  flex-shrink: 0;
+}
+
+.gaugeSvg {
+  width: 180px;
+  height: 180px;
+  animation: fadeIn 0.6s ease;
+}
+
+/* ── Strengths ────────────────────────────────────────────────────────── */
+.strengths {
+  flex: 1;
+  min-width: 220px;
+}
+
+.strengthsTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.strengthItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
+.strengthCheck {
+  color: var(--success);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Criteria Grid ─────────────────────────────────────────────────────── */
+.criteriaGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.criterion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.criterionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.criterionLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.criterionScore {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.barTrack {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s ease;
+  position: relative;
+}
+
+.criterionExplanation {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}

@@ -1,0 +1,313 @@
+/* ─── Full-page layout ─── */
+.page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background blob */
+.blob {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(ellipse at center, var(--accent-dim) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 620px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+
+/* ─── Badge ─── */
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--border-mid);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  background: var(--accent-dim);
+  transition: all var(--transition);
+}
+
+/* ─── Heading ─── */
+.heading {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  color: var(--text-bright);
+  margin-bottom: 20px;
+  transition: color var(--transition);
+}
+
+.headingAccent {
+  color: var(--accent);
+}
+
+.subheading {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 500px;
+  margin-bottom: 32px;
+  transition: color var(--transition);
+}
+
+/* ─── Stats row ─── */
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.statNum {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.statDivider {
+  width: 1px;
+  height: 28px;
+  background: var(--border-mid);
+}
+
+/* ─── Form card ─── */
+.card {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  text-align: left;
+  transition: background var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+/* ─── Form ─── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color var(--transition);
+}
+
+/* ─── Input wrapper ─── */
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--radius-md);
+  background: var(--input-bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background var(--transition);
+}
+
+.inputWrap:focus-within {
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.inputWrapError {
+  border-color: var(--danger) !important;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-dim);
+  pointer-events: none;
+  flex-shrink: 0;
+  transition: color var(--transition);
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 13px 16px 13px 40px;
+  color: var(--text-bright);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  outline: none;
+  transition: color var(--transition);
+}
+
+.input::placeholder {
+  color: var(--text-dim);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fieldError {
+  font-size: 0.8rem;
+  color: var(--danger);
+}
+
+.fieldHint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  transition: color var(--transition);
+}
+
+/* ─── Submit button ─── */
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--accent);
+  color: #000e1a;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 15px 28px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+  margin-top: 4px;
+  letter-spacing: 0.01em;
+}
+
+.button:hover:not(:disabled) {
+  background: #22dfff;
+  box-shadow: 0 0 28px var(--accent-glow), 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 14, 26, 0.25);
+  border-top-color: #000e1a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ─── Pipeline footer ─── */
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.pipelineLabel {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  transition: color var(--transition);
+}
+
+.pipelineAgents {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.pipelineItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pipelineArrow {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
+.pipelineAgent {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--accent-dim);
+  transition: all var(--transition);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+  .page { padding: 40px 16px 60px; }
+  .card { padding: 24px 20px; }
+  .stats { gap: 16px; }
+  .pipelineAgents { gap: 6px; }
+  .pipelineArrow { display: none; }
+}

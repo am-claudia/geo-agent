@@ -1,0 +1,204 @@
+/* ─── Page ─── */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.empty {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 60px 0;
+}
+
+/* ─── Top row: gauge + summary ─── */
+.topRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+/* ─── Gauge ─── */
+.gaugeWrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 200px;
+  height: 200px;
+}
+
+.gaugeSvg {
+  display: block;
+}
+
+.gaugeCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.gaugeScore {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.gaugeMax {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: -4px;
+}
+
+.gaugeLabel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+/* ─── Summary ─── */
+.summary {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summarySection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.sectionDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  transition: color var(--transition);
+}
+
+.listCheck {
+  color: var(--score-great);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.listX {
+  color: var(--score-poor);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── Criteria breakdown ─── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: -0.01em;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.criteriaGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ─── Criterion bar ─── */
+.criterion {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.criterionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.criterionLabel {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color var(--transition);
+}
+
+.criterionScore {
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.barTrack {
+  height: 7px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: background var(--transition);
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.criterionExplanation {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  transition: color var(--transition);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 600px) {
+  .topRow { gap: 28px; justify-content: center; }
+  .summary { min-width: 100%; }
+}
