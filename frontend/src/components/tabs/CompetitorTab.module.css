@@ -299,6 +299,18 @@
   transition: color var(--transition);
 }
 
+.whyCitedList {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  line-height: 1.55;
+  margin: 4px 0 0 0;
+  padding-left: 16px;
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 /* ─── Strengths cell ─── */
 .tdStrengths {
   padding: 14px 14px;

@@ -26,10 +26,10 @@ export default function RewritePanel({ rewrites }) {
                   <span className={styles.quickWinAction}>{qw.action}</span>
                   <div className={styles.quickWinBadges}>
                     <span className={styles.badge} style={{ color: EFFORT_COLOR[qw.effort] }}>
-                      effort: {qw.effort}
+                      Effort: {qw.effort}
                     </span>
                     <span className={styles.badge} style={{ color: IMPACT_COLOR[qw.impact] }}>
-                      impact: {qw.impact}
+                      Impact: {qw.impact}
                     </span>
                   </div>
                 </div>
@@ -103,7 +103,7 @@ function RewriteItem({ item, index }) {
         <div className={styles.signals}>
           <span className={styles.signalsLabel}>GEO signals added:</span>
           {geo_signals_added.map((s, i) => (
-            <span key={i} className={styles.signalTag}>+ {s}</span>
+            <span key={i} className={styles.signalTag}>+ {s ? s.charAt(0).toUpperCase() + s.slice(1) : s}</span>
           ))}
         </div>
       )}

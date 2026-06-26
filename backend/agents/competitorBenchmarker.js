@@ -135,7 +135,7 @@ Return ONLY this JSON:
         "<specific GEO strength 2>",
         "<specific GEO strength 3>"
       ],
-      "why_ai_cites_it": "<1-2 sentences: specific reason AI systems prefer this page>",
+      "why_ai_cites_it": ["<bullet 1: one specific reason AI cites this, with **key term** bolded>", "<bullet 2: another specific reason, with **key term** bolded>"],
       "key_differentiator": "<the single most citation-worthy element of this page>"
     }
   ],

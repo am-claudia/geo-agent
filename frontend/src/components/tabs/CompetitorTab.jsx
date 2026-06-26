@@ -1,8 +1,28 @@
 import { motion } from 'framer-motion';
 import styles from './CompetitorTab.module.css';
 
+const sc = s => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+
+function parseBold(text) {
+  return text.split(/\*\*(.+?)\*\*/).map((part, i) =>
+    i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+  );
+}
+
+function WhyCited({ value }) {
+  const bullets = Array.isArray(value)
+    ? value
+    : (value || '').split(/(?<=[.!?])\s+(?=[A-Z])/).map(s => s.trim()).filter(Boolean);
+  if (!bullets.length) return null;
+  return (
+    <ul className={styles.whyCitedList}>
+      {bullets.map((b, i) => <li key={i}>{parseBold(b)}</li>)}
+    </ul>
+  );
+}
+
 function StrengthTag({ text }) {
-  return <span className={styles.strengthTag}>{text}</span>;
+  return <span className={styles.strengthTag}>{sc(text)}</span>;
 }
 
 function CompetitorRow({ competitor, index }) {
@@ -39,9 +59,7 @@ function CompetitorRow({ competitor, index }) {
         {key_differentiator && (
           <span className={styles.signalBadge}>{key_differentiator}</span>
         )}
-        {why_ai_cites_it && (
-          <p className={styles.whyCited}>{why_ai_cites_it}</p>
-        )}
+        {why_ai_cites_it && <WhyCited value={why_ai_cites_it} />}
       </td>
 
       <td className={styles.tdStrengths}>
@@ -114,7 +132,7 @@ export default function CompetitorTab({ competitorData }) {
             <div className={styles.contentTypes}>
               <span className={styles.ctLabel}>Dominant formats:</span>
               {dominant_content_types.map((t, i) => (
-                <span key={i} className={styles.ctTag}>{t}</span>
+                <span key={i} className={styles.ctTag}>{sc(t)}</span>
               ))}
             </div>
           )}

@@ -60,7 +60,7 @@ function ActionItem({ item, index }) {
           <div className={styles.badges}>
             {effort && (
               <span className={styles.badge} style={{ color: EFFORT_COLOR[effort] || 'var(--text-secondary)', borderColor: EFFORT_COLOR[effort] || 'var(--border-mid)' }}>
-                {effort} effort
+                {effort ? effort.charAt(0).toUpperCase() + effort.slice(1) : effort} effort
               </span>
             )}
             {timeline && (
