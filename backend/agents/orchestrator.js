@@ -53,7 +53,7 @@ export async function runOrchestrator(url, topic, emit) {
     // Agent 3
     (async () => {
       try {
-        const result = await benchmarkCompetitors(topic);
+        const result = await benchmarkCompetitors(topic, url);
         console.log('[ORCHESTRATOR] ✓ Agent 3 complete —', result.competitors.length, 'competitors found');
         emit('agent_complete', 'competitorBenchmarker', {
           message: `Found ${result.competitors.length} key competitors to benchmark`,

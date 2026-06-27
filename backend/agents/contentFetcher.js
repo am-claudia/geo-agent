@@ -104,6 +104,26 @@ export async function fetchAndParseContent(url) {
     mainContent = $('body').text().replace(/\s+/g, ' ').trim();
   }
 
+  // Strip UI noise strings that survive element-level removal
+  const UI_NOISE = [
+    /send feedback/gi,
+    /was this (page |article |doc )?helpful\??(\s*(yes|no)\s*)*/gi,
+    /rate this (page|article|doc|content)/gi,
+    /(accept|reject) (all )?cookies?/gi,
+    /cookie (settings?|preferences?|notice|consent|policy)/gi,
+    /we use cookies[^.]*\./gi,
+  ];
+  for (const pattern of UI_NOISE) mainContent = mainContent.replace(pattern, '');
+  mainContent = mainContent.replace(/\s{2,}/g, ' ').trim();
+
+  // Trim content to start from after the first H1 — drops breadcrumbs and pre-title chrome
+  if (headings.h1.length > 0) {
+    const h1Pos = mainContent.indexOf(headings.h1[0]);
+    if (h1Pos !== -1) {
+      mainContent = mainContent.substring(h1Pos + headings.h1[0].length).replace(/^\s+/, '');
+    }
+  }
+
   // Truncate to 8 000 chars to keep LLM costs reasonable
   const truncated = mainContent.length > 8000;
   if (truncated) mainContent = mainContent.substring(0, 8000) + '\n\n[… content truncated for analysis]';
@@ -116,6 +136,48 @@ export async function fetchAndParseContent(url) {
                  $('h2, h3').toArray().some(el => /\?/.test($(el).text()));
   const hasSchema = $('script[type="application/ld+json"]').length > 0;
 
+  // Extract schema.org structured data — used by auditor for Schema & Freshness criteria
+  const schemaTypes = [];
+  let datePublished = null;
+  let dateModified = null;
+  let schemaAuthor = null;
+
+  $('script[type="application/ld+json"]').each((_, el) => {
+    try {
+      const data = JSON.parse($(el).html());
+      const items = Array.isArray(data) ? data : [data];
+      items.forEach(item => {
+        if (item['@type']) {
+          const types = Array.isArray(item['@type']) ? item['@type'] : [item['@type']];
+          schemaTypes.push(...types);
+        }
+        if (item.datePublished && !datePublished) datePublished = item.datePublished;
+        if (item.dateModified && !dateModified) dateModified = item.dateModified;
+        if (item.author && !schemaAuthor) {
+          schemaAuthor = typeof item.author === 'string' ? item.author : (item.author?.name || null);
+        }
+      });
+    } catch {}
+  });
+
+  // Fallback: meta tags for dates and author
+  if (!datePublished) {
+    datePublished =
+      $('meta[property="article:published_time"]').attr('content') ||
+      $('meta[name="date"]').attr('content') ||
+      $('time[datetime]').first().attr('datetime') || null;
+  }
+  if (!dateModified) {
+    dateModified = $('meta[property="article:modified_time"]').attr('content') || null;
+  }
+  if (!schemaAuthor) {
+    schemaAuthor =
+      $('meta[name="author"]').attr('content') ||
+      $('meta[property="article:author"]').attr('content') || null;
+  }
+
+  const questionHeadingCount = [...headings.h2, ...headings.h3].filter(h => h.includes('?')).length;
+
   return {
     url,
     title,
@@ -123,7 +185,16 @@ export async function fetchAndParseContent(url) {
     headings,
     wordCount,
     mainContent,
-    structuralSignals: { hasLists, hasFAQ, hasSchema },
+    structuralSignals: {
+      hasLists,
+      hasFAQ,
+      hasSchema,
+      schemaTypes,
+      datePublished,
+      dateModified,
+      schemaAuthor,
+      questionHeadingCount,
+    },
     success: true,
   };
 }

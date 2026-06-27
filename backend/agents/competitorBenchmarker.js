@@ -50,7 +50,7 @@ async function serperSearch(query) {
   }
 }
 
-export async function benchmarkCompetitors(topic) {
+export async function benchmarkCompetitors(topic, inputUrl) {
   console.log(`\n[CompetitorBenchmarker] ══ START ══════════════════════════`);
   console.log(`[CompetitorBenchmarker] Topic: "${topic}"`);
   console.log(`[CompetitorBenchmarker] SERPER_API_KEY set: ${!!process.env.SERPER_API_KEY}`);
@@ -101,7 +101,27 @@ export async function benchmarkCompetitors(topic) {
   console.log(`[CompetitorBenchmarker]   Total unique results: ${allResults.length}`);
   allResults.forEach((r, i) => console.log(`[CompetitorBenchmarker]   [${i + 1}] ${r.domain} | pos:${r.position} | ${r.url}`));
 
-  const topResults = allResults.slice(0, 15);
+  // Remove results that belong to the same domain as the page being analyzed
+  const inputDomain = (() => {
+    try {
+      const hostname = new URL(inputUrl).hostname.replace(/^www\./, '');
+      const parts = hostname.split('.');
+      return parts.length > 2 ? parts.slice(-2).join('.') : hostname;
+    } catch {
+      return '';
+    }
+  })();
+
+  const filteredResults = inputDomain
+    ? allResults.filter(r => r.domain !== inputDomain && !r.domain.endsWith('.' + inputDomain))
+    : allResults;
+
+  if (inputDomain) {
+    const removed = allResults.length - filteredResults.length;
+    console.log(`[CompetitorBenchmarker]   Self-domain filter ("${inputDomain}"): removed ${removed} result(s)`);
+  }
+
+  const topResults = filteredResults.slice(0, 15);
   console.log(`[CompetitorBenchmarker]   Top ${topResults.length} selected for LLM analysis`);
 
   if (topResults.length === 0) {

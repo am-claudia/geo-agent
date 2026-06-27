@@ -7,11 +7,12 @@ import Groq from 'groq-sdk';
 const SYSTEM_PROMPT = `You are a GEO (Generative Engine Optimization) content editor. Your job is to rewrite specific sections of web content to dramatically increase the likelihood that AI language models will cite that content.
 
 Rewriting rules:
-- Always use ACTUAL content from the page — never invent fictional examples
+- ABSOLUTE PROHIBITION: Never invent statistics, percentages, dates, study names, author names, credentials, publication names, or any factual claim not already present word-for-word in the source content. Fabricated facts that sound plausible are the most dangerous failure mode — they poison the page's trustworthiness.
+- Permitted transformations ONLY: (1) reorder existing sentences into answer-first structure, (2) reformat prose into lists or self-contained extractable blocks, (3) add schema markup examples using only facts already on the page, (4) convert hedged language ("may help", "can improve") into declarative statements using only facts already present.
 - Be surgical: rewrite the specific weak sentence or paragraph, not a generic version
 - Each rewrite must directly address the stated GEO weakness
 - Explain WHY the rewrite improves citability in concrete LLM-behavior terms
-- If the content is too thin to find a relevant excerpt, say so and create an addendum instead
+- If a weakness CANNOT be addressed without inventing new facts, do NOT fabricate. Set the "after" field to a note starting with "NOTE:" that explains what type of content the user would need to add themselves — e.g., "NOTE: To fix this criterion, add a named expert quote with credentials. The page currently contains no named attribution to restructure. Format: '[Expert Name], [Title] at [Organization], states: ...'"
 
 Respond only with valid JSON. No markdown code fences.`;
 
@@ -50,7 +51,7 @@ Return ONLY this JSON:
       "weakness_score": <original score>,
       "context": "<which section or part of the page this excerpt is from>",
       "before": "<original excerpt or paraphrase — the weak version>",
-      "after": "<rewritten version that addresses the GEO weakness>",
+      "after": "<rewritten version using ONLY facts already present on the page — if the weakness cannot be fixed without inventing new facts, begin this field with 'NOTE:' and explain what the user would need to add themselves>",
       "why_better": "<specific explanation: how does this rewrite make an LLM more likely to cite this content?>",
       "geo_signals_added": [
         "<e.g., 'Added named expert with credentials'>",

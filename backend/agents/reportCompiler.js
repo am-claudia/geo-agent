@@ -22,18 +22,25 @@ export async function compileReport(agentOutputs) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   const criteriaNames = {
-    authority: 'Authority & Credibility',
-    structural_clarity: 'Structural Clarity',
-    quotability: 'Quotability',
-    comprehensiveness: 'Comprehensiveness',
-    semantic_clarity: 'Semantic Clarity',
-    freshness: 'Freshness Signals',
-    question_answering: 'Q&A Format',
+    evidence_density: 'Evidence Density',
+    chunk_quality: 'Chunk Quality & Passage Architecture',
+    question_structure: 'Question-Oriented Structure',
+    eeat_authority: 'E-E-A-T & Author Credibility',
+    schema_markup: 'Schema & Structured Data',
+    freshness: 'Freshness & Temporal Signals',
+    fluency_quality: 'Fluency & Content Quality',
+    domain_entity_authority: 'Domain Entity Authority',
   };
 
   const criteriaBlock = Object.entries(geoAudit.criteria)
     .map(([key, val]) => `${criteriaNames[key] || key}: ${val.score}/10 — ${val.explanation.substring(0, 120)}`)
     .join('\n');
+
+  const domainAuthScore = geoAudit.criteria?.domain_entity_authority?.score ?? 0;
+  const domainBonus = geoAudit.domain_bonus ?? 0;
+  const domainAuthNote = domainBonus > 0
+    ? `\nIMPORTANT — DOMAIN AUTHORITY BONUS APPLIED (+${domainBonus}): The final GEO score includes a +${domainBonus} domain authority bonus (domain entity authority score: ${domainAuthScore}/10). The executive_summary must state this explicitly — include a sentence such as "Domain authority bonus applied: +${domainBonus} — this domain's institutional recognition compensates for weak on-page signals." Do not treat this as a standard underperforming page; frame recommendations as lifting on-page signals to match the domain's inherent citation weight.`
+    : '';
 
   const prompt = `Compile a professional GEO Audit Report from the four agent outputs below. Write as a senior consultant: specific, direct, no filler.
 
@@ -60,6 +67,7 @@ Gaps: ${competitorData.gap_opportunities?.join('; ')}
 ${rewrites.rewrites.map(r => `Fixed: ${r.weakness_addressed} — ${r.why_better?.substring(0, 120)}`).join('\n')}
 Quick wins: ${rewrites.additional_quick_wins?.map(q => q.action).join('; ')}
 
+${domainAuthNote}
 Return ONLY this JSON:
 {
   "executive_summary": "<3 focused sentences: (1) current GEO status with score context, (2) biggest opportunity or blocker, (3) potential impact of fixing it. Specific, not generic.>",
@@ -75,7 +83,7 @@ Return ONLY this JSON:
     {
       "priority": 1,
       "action": "<specific, implementable action — begin with a verb>",
-      "criterion_affected": "<criterion key>",
+      "criterion_affected": "<MUST be one of: evidence_density | chunk_quality | question_structure | eeat_authority | schema_markup | freshness | fluency_quality | domain_entity_authority>",
       "criterion_label": "<human-readable label>",
       "expected_impact": "<specific expected improvement to citability>",
       "implementation": "<concrete how-to, 1-2 sentences>",
@@ -140,5 +148,22 @@ Return ONLY this JSON:
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('Report Compiler returned non-JSON output.');
 
-  return JSON.parse(jsonMatch[0]);
+  const parsed = JSON.parse(jsonMatch[0]);
+
+  // Post-parse action plan cleanup
+  const VALID_CRITERIA = new Set([
+    'evidence_density', 'chunk_quality', 'question_structure', 'eeat_authority',
+    'schema_markup', 'freshness', 'fluency_quality', 'domain_entity_authority',
+  ]);
+  const NEW_FORMAT_RE = /\b(video|podcast|infographic|webinar|animation|slideshow)\b/i;
+
+  if (Array.isArray(parsed.action_plan)) {
+    parsed.action_plan = parsed.action_plan
+      .filter(item => VALID_CRITERIA.has(item.criterion_affected))
+      .filter(item => !NEW_FORMAT_RE.test(item.implementation || ''))
+      .slice(0, 5)
+      .map((item, i) => ({ ...item, priority: i + 1 }));
+  }
+
+  return parsed;
 }

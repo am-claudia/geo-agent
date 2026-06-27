@@ -6,13 +6,20 @@ const ARC_DEGREES = 270;
 const ARC_LENGTH = (ARC_DEGREES / 360) * CIRCUMFERENCE; // ≈ 339.3
 
 const CRITERIA_LABELS = {
-  authority:         'Authority & Credibility',
-  structural_clarity:'Structural Clarity',
-  quotability:       'Quotability',
-  comprehensiveness: 'Comprehensiveness',
-  semantic_clarity:  'Semantic Clarity',
-  freshness:         'Freshness Signals',
-  question_answering:'Q&A Format',
+  authority:               'Authority & Credibility',
+  structural_clarity:      'Structural Clarity',
+  quotability:             'Quotability',
+  comprehensiveness:       'Comprehensiveness',
+  semantic_clarity:        'Semantic Clarity',
+  freshness:               'Freshness Signals',
+  question_answering:      'Q&A Format',
+  evidence_density:        'Evidence Density',
+  chunk_quality:           'Chunk Quality',
+  question_structure:      'Question-Oriented Structure',
+  eeat_authority:          'E-E-A-T & Author Credibility',
+  schema_markup:           'Schema & Structured Data',
+  fluency_quality:         'Fluency & Content Quality',
+  domain_entity_authority: 'Domain Entity Authority',
 };
 
 function scoreColor(score) {

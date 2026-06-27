@@ -3,13 +3,20 @@ import { motion } from 'framer-motion';
 import styles from './ScoreTab.module.css';
 
 const CRITERIA_LABELS = {
-  authority:          'Authority & Credibility',
-  structural_clarity: 'Structural Clarity',
-  quotability:        'Quotability',
-  comprehensiveness:  'Comprehensiveness',
-  semantic_clarity:   'Semantic Clarity',
-  freshness:          'Freshness Signals',
-  question_answering: 'Q&A Format',
+  authority:               'Authority & Credibility',
+  structural_clarity:      'Structural Clarity',
+  quotability:             'Quotability',
+  comprehensiveness:       'Comprehensiveness',
+  semantic_clarity:        'Semantic Clarity',
+  freshness:               'Freshness Signals',
+  question_answering:      'Q&A Format',
+  evidence_density:        'Evidence Density',
+  chunk_quality:           'Chunk Quality',
+  question_structure:      'Question-Oriented Structure',
+  eeat_authority:          'E-E-A-T & Author Credibility',
+  schema_markup:           'Schema & Structured Data',
+  fluency_quality:         'Fluency & Content Quality',
+  domain_entity_authority: 'Domain Entity Authority',
 };
 
 function scoreColor(score) {
@@ -24,6 +31,34 @@ function scoreLabel(score) {
   if (score >= 6.5)return 'Good';
   if (score >= 4.5)return 'Fair';
   return 'Needs Work';
+}
+
+function citationLikelihood(domainScore, overallScore) {
+  if (domainScore >= 8 && overallScore >= 6) return { label: 'Very High',    bg: '#16a34a' };
+  if (domainScore >= 8)                      return { label: 'High',          bg: '#0d9488' };
+  if (domainScore >= 6)                      return { label: 'Moderate–High', bg: '#2563eb' };
+  if (overallScore >= 5)                     return { label: 'Moderate',      bg: '#b45309' };
+  return                                            { label: 'Low',           bg: '#dc2626' };
+}
+
+function CitationLikelihood({ domainScore, overallScore }) {
+  const { label, bg } = citationLikelihood(domainScore, overallScore);
+  return (
+    <motion.div
+      className={styles.citationWrap}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.9 }}
+    >
+      <div className={styles.citationRow}>
+        <span className={styles.citationLabel}>Citation Likelihood</span>
+        <span className={styles.citationBadge} style={{ background: bg }}>{label}</span>
+      </div>
+      <p className={styles.citationNote}>
+        On-page GEO score measures content optimization. Citation likelihood factors in domain authority.
+      </p>
+    </motion.div>
+  );
 }
 
 function GaugeCircle({ score }) {
@@ -128,7 +163,7 @@ export default function ScoreTab({ geoAudit }) {
       {/* Contextual explanation */}
       <div className={styles.explainer}>
         <p className={styles.explainerText}>
-          The <strong>GEO Score</strong> (0-10) measures how likely AI systems like <strong>ChatGPT, Perplexity, and Google AI Overviews</strong> are to cite this page as a source. It is calculated across 7 criteria:
+          The <strong>GEO Score</strong> (0-10) measures how likely AI systems like <strong>ChatGPT, Perplexity, and Google AI Overviews</strong> are to cite this page as a source. It is calculated across 8 criteria:
         </p>
         <ul className={styles.criteriaList}>
           <li className={styles.criteriaListItem}><strong>Quotability:</strong> Does the page contain clear, citable statements, statistics, or definitions that AI can lift verbatim?</li>
@@ -138,12 +173,19 @@ export default function ScoreTab({ geoAudit }) {
           <li className={styles.criteriaListItem}><strong>Comprehensiveness:</strong> Does the page cover the topic thoroughly enough to be the definitive source?</li>
           <li className={styles.criteriaListItem}><strong>Semantic Clarity:</strong> Is the language precise and free of ambiguity, making it easy for AI to interpret?</li>
           <li className={styles.criteriaListItem}><strong>Freshness Signals:</strong> Does the page indicate recent publication or updates that signal relevance?</li>
+          <li className={styles.criteriaListItem}><strong>Domain Entity Authority:</strong> Whether this domain is recognized as an institutional authority in LLM training data, independent of on-page signals.</li>
         </ul>
       </div>
 
-      {/* Gauge + summary */}
+      {/* Gauge + citation likelihood */}
       <div className={styles.topRow}>
-        <GaugeCircle score={overall_score} />
+        <div className={styles.gaugeColumn}>
+          <GaugeCircle score={overall_score} />
+          <CitationLikelihood
+            domainScore={criteria.domain_entity_authority?.score ?? 0}
+            overallScore={overall_score}
+          />
+        </div>
 
         <div className={styles.summary}>
           {strengths.length > 0 && (
