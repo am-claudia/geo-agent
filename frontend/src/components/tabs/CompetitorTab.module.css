@@ -6,51 +6,161 @@
 
 .empty {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 15px;
   text-align: center;
   padding: 60px 0;
 }
 
-/* ─── Explainer block ─── */
-.explainer {
-  background: var(--accent-dim);
-  border: 1px solid var(--border-mid);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-  transition: all var(--transition);
-}
-
-.explainerRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-}
-
-.explainerItem {
+/* ─── Rich empty state ─── */
+.emptyState {
   display: flex;
-  gap: 10px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 24px;
+  text-align: center;
 }
 
-.explainerIcon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
-  line-height: 1;
-  margin-top: 2px;
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  color: var(--text-secondary);
+  opacity: 0.45;
 }
 
-.explainerTitle {
-  display: block;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  margin-bottom: 4px;
+.emptyHeading {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
   transition: color var(--transition);
 }
 
-.explainerDesc {
-  font-size: 0.8rem;
+.emptySubtext {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 400px;
+  line-height: 1.6;
+  margin: 0;
+  transition: color var(--transition);
+}
+
+/* ─── Global toggle/expand controls ─── */
+.chevronIcon {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.showMoreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.showMoreBtn:hover {
+  color: var(--accent-text);
+}
+
+/* ─── Explainer toggle ─── */
+.explainerToggleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.explainerToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+  text-align: left;
+  transition: color 0.15s ease;
+}
+
+.explainerToggle:hover {
+  color: var(--accent-text);
+}
+
+.explainerBody {
+  overflow: hidden;
+}
+
+.explainerBodyInner {
+  padding: 16px 20px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-top: 10px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.explainerSectionLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  transition: color var(--transition);
+}
+
+.explainerCards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.explainerCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.explainerCardIcon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.explainerCardTitle {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+  transition: color var(--transition);
+}
+
+.explainerCardDesc {
+  font-size: 12px;
   color: var(--text-secondary);
   line-height: 1.55;
   transition: color var(--transition);
@@ -60,21 +170,20 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .sectionTitle {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  letter-spacing: -0.01em;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
   transition: color var(--transition), border-color var(--transition);
 }
 
 .sectionHint {
-  font-size: 0.83rem;
+  font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.55;
   margin-top: -4px;
@@ -83,18 +192,18 @@
 
 .sectionHint strong {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* ─── Landscape summary ─── */
 .summary {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .summaryText {
-  font-size: 0.92rem;
+  font-size: 15px;
   color: var(--text-primary);
   line-height: 1.7;
   transition: color var(--transition);
@@ -108,22 +217,22 @@
 }
 
 .ctLabel {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
-.ctTag {
-  font-size: 0.75rem;
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border-mid);
+/* Blue pill for dominant content types */
+.ctTagBlue {
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--accent-glow);
   background: var(--accent-dim);
   color: var(--accent-text);
   font-weight: 500;
-  transition: all var(--transition);
 }
 
 /* ─── Competitor table ─── */
@@ -133,7 +242,6 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: var(--shadow-card);
   transition: all var(--transition);
 }
 
@@ -144,73 +252,66 @@
 }
 
 .thead tr {
-  background: var(--accent-dim);
-  border-bottom: 1px solid var(--border-mid);
+  background: var(--bg-card-hover);
+  border-bottom: 1px solid var(--border);
 }
 
 .thRank {
-  width: 48px;
+  width: 40px;
   padding: 10px 12px;
   text-align: center;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  transition: color var(--transition);
+  color: #6B7280;
 }
 
 .thDomain {
-  width: 22%;
+  width: 180px;
   padding: 10px 14px;
   text-align: left;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  transition: color var(--transition);
+  color: #6B7280;
 }
 
 .thSignal {
-  width: 28%;
+  width: 280px;
   padding: 10px 14px;
   text-align: left;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  transition: color var(--transition);
+  color: #6B7280;
 }
 
 .thStrengths {
+  width: 320px;
   padding: 10px 14px;
   text-align: left;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  transition: color var(--transition);
+  color: #6B7280;
 }
 
 /* ─── Table rows ─── */
 .row {
   border-bottom: 1px solid var(--border);
-  transition: background 0.2s ease;
+  transition: background 0.15s ease;
 }
 
-.row:last-child {
-  border-bottom: none;
-}
+.row:last-child { border-bottom: none; }
 
-.row:hover {
-  background: var(--bg-card-hover);
-}
+.row:hover { background: var(--bg-card-hover); }
 
 .tdRank {
-  padding: 14px 12px;
+  padding: 16px 12px;
   text-align: center;
   vertical-align: top;
 }
@@ -219,19 +320,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--accent-dim);
-  border: 1px solid var(--border-mid);
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--accent-text);
-  transition: all var(--transition);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--transition);
 }
 
 .tdDomain {
-  padding: 14px 14px;
+  padding: 16px 14px;
   vertical-align: top;
 }
 
@@ -242,15 +339,14 @@
 }
 
 .domainName {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  letter-spacing: -0.01em;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
   transition: color var(--transition);
 }
 
 .pageTitle {
-  font-size: 0.74rem;
+  font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.35;
   overflow: hidden;
@@ -264,130 +360,213 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--accent-text);
+  font-size: 12px;
+  font-weight: 500;
+  color: #6B7280;
   margin-top: 4px;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
-.visitLink:hover {
-  text-decoration: underline;
-}
+.visitLink:hover { text-decoration: underline; }
 
 /* ─── Signal cell ─── */
 .tdSignal {
-  padding: 14px 14px;
+  padding: 16px 14px;
   vertical-align: top;
 }
 
+/* Blue badge for key_differentiator */
 .signalBadge {
-  display: block;
-  font-size: 0.83rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  margin-bottom: 5px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--accent-glow);
+  background: var(--accent-dim);
+  color: var(--accent-text);
+  margin-bottom: 6px;
   line-height: 1.4;
-  transition: color var(--transition);
 }
 
-.whyCited {
-  font-size: 0.82rem;
-  color: var(--text-primary);
-  line-height: 1.55;
+/* Why AI cites — always visible */
+.whyCitedWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.whyCitedLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
   transition: color var(--transition);
 }
 
 .whyCitedList {
-  font-size: 0.82rem;
-  color: var(--text-primary);
+  font-size: 13px;
+  color: var(--text-secondary);
   line-height: 1.55;
-  margin: 4px 0 0 0;
-  padding-left: 16px;
+  margin: 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--border);
   list-style: disc;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  transition: border-color var(--transition);
 }
 
 /* ─── Strengths cell ─── */
 .tdStrengths {
-  padding: 14px 14px;
+  padding: 16px 14px;
   vertical-align: top;
 }
 
-.tagsWrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  align-items: flex-start;
-}
-
-.strengthTag {
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 3px 9px;
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--score-great) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--score-great) 32%, transparent);
-  color: var(--score-great);
-  line-height: 1.3;
-  transition: all var(--transition);
-}
-
-.moreTag {
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  padding: 3px 6px;
-  transition: color var(--transition);
-}
-
-/* ─── Gap opportunities ─── */
-.gaps {
+.strengthsList {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.gapItem {
+.strengthItem {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  transition: all var(--transition);
+  gap: 8px;
 }
 
-.gapNum {
+.strengthCheck {
+  color: var(--success);
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--accent-dim);
-  border: 1px solid var(--border-mid);
+  margin-top: 1px;
+  stroke: var(--success);
+}
+
+.strengthText {
+  font-size: 13px;
+  color: var(--success);
+  line-height: 1.45;
+}
+
+.moreTag {
+  font-size: 12px;
+  color: var(--text-dim);
+  padding: 3px 6px;
+  transition: color var(--transition);
+}
+
+/* ─── Gap connector ─── */
+.gapConnector {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--accent-text);
-  margin-top: 1px;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.gapConnectorLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.gapConnectorBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
   transition: all var(--transition);
 }
 
-.gapText {
-  font-size: 0.88rem;
+/* ─── Gap cards ─── */
+.gapCards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gapCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  overflow: hidden;
+  transition: border-color 0.15s ease, background var(--transition), box-shadow 0.15s ease;
+}
+
+.gapCard[role="button"] {
+  cursor: pointer;
+}
+
+.gapCard[role="button"]:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.gapCardExpanded {
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+}
+
+.gapCardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.gapCardNum {
+  flex-shrink: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+  margin-top: 1px;
+}
+
+.gapCardTitle {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.55;
+  transition: color var(--transition);
+}
+
+.gapCardToggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.gapCardDetail {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 0 20px 18px 58px;
+  margin: 0;
   transition: color var(--transition);
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 700px) {
-  .explainerRow { grid-template-columns: 1fr; gap: 14px; }
+@media (max-width: 768px) {
+  .explainerRow { grid-template-columns: 1fr; gap: 16px; }
   .table { table-layout: auto; }
   .thSignal, .tdSignal { display: none; }
   .thDomain { width: auto; }

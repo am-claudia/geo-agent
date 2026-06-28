@@ -1,10 +1,26 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import { createHash } from 'crypto';
 import { runOrchestrator } from './agents/orchestrator.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// In-memory result cache: Map<sha256(url|topic), { data, ts }>
+const cache = new Map();
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+function buildCacheKey(url, topic) {
+  return createHash('sha256').update(`${url}|${topic}`).digest('hex');
+}
+
+function cacheGet(key) {
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.ts > CACHE_TTL_MS) { cache.delete(key); return null; }
+  return entry.data;
+}
 
 app.use(cors({
   origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
@@ -52,8 +68,28 @@ app.post('/api/analyze', async (req, res) => {
     res.write(`data: ${payload}\n\n`);
   };
 
+  // Cache check — serve immediately if fresh result exists
+  const key = buildCacheKey(url, topic);
+  const cached = cacheGet(key);
+  if (cached) {
+    sendEvent('analysis_complete', 'orchestrator', { ...cached, cache_hit: true });
+    clearInterval(heartbeat);
+    res.end();
+    return;
+  }
+
   try {
-    await runOrchestrator(url, topic, sendEvent);
+    let capturedResult = null;
+    const sendEventWithCapture = (type, agent, data) => {
+      sendEvent(type, agent, data);
+      if (type === 'analysis_complete') capturedResult = data;
+    };
+
+    await runOrchestrator(url, topic, sendEventWithCapture);
+
+    if (capturedResult) {
+      cache.set(key, { data: capturedResult, ts: Date.now() });
+    }
   } catch (err) {
     console.error('[SERVER] Orchestrator error:', err.message);
     sendEvent('error', 'orchestrator', { message: err.message });

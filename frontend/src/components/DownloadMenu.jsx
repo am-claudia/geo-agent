@@ -55,251 +55,462 @@ function exportJSON(results, url, topic) {
 }
 
 // ─── PDF export ──────────────────────────────────────────────────────────────
+const PDF_CRITERIA_LABELS = {
+  authority:               'Authority & Credibility',
+  structural_clarity:      'Structural Clarity',
+  quotability:             'Quotability',
+  comprehensiveness:       'Comprehensiveness',
+  semantic_clarity:        'Semantic Clarity',
+  freshness:               'Freshness Signals',
+  question_answering:      'Q&A Format',
+  evidence_density:        'Evidence Density',
+  chunk_quality:           'Chunk Quality',
+  question_structure:      'Question-Oriented Structure',
+  eeat_authority:          'E-E-A-T & Author Credibility',
+  schema_markup:           'Schema & Structured Data',
+  fluency_quality:         'Fluency & Content Quality',
+  domain_entity_authority: 'Domain Entity Authority',
+};
+
 async function exportPDF(results, url, topic, score) {
   const { jsPDF } = await import('jspdf');
-  const { geoAudit, competitorData, rewrites, finalReport } = results ?? {};
-  const domain = getDomain(url);
-  const date   = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const { geoAudit, competitorData, finalReport } = results ?? {};
+  const domain   = getDomain(url);
+  const dateStr  = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const datetime = new Date().toLocaleString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
 
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const W = 210; // page width
-  const MARGIN = 20;
-  const TW = W - MARGIN * 2;
-  let y = MARGIN;
+  const doc    = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W      = 210;
+  const H      = 297;
+  const MARGIN = 18;
+  const TW     = W - MARGIN * 2;
+  let y        = MARGIN;
 
-  const ACCENT = [0, 153, 187];
-  const DARK   = [10, 15, 30];
-  const GRAY   = [100, 116, 139];
-  const LGRAY  = [226, 232, 240];
+  // ── Color palette ──────────────────────────────────────────────────────────
+  const BLUE      = [37, 99, 235];
+  const BLUE_LITE = [219, 234, 254];   // blue-100
+  const DARK      = [17, 24, 39];
+  const MID       = [55, 65, 81];
+  const GRAY      = [107, 114, 128];
+  const LGRAY     = [229, 231, 235];
+  const SURFACE   = [249, 250, 251];
+  const WHITE     = [255, 255, 255];
+  const GREEN     = [22, 163, 74];
+  const GREEN_L   = [220, 252, 231];
+  const ORANGE    = [234, 88, 12];
+  const ORANGE_L  = [255, 237, 213];
+  const RED       = [220, 38, 38];
+  const RED_L     = [254, 226, 226];
 
-  function newPage() {
-    doc.addPage();
-    y = MARGIN;
+  function scoreRGB(s)  { return s >= 7 ? GREEN  : s >= 5 ? ORANGE  : RED; }
+  function scoreLiteRGB(s) { return s >= 7 ? GREEN_L : s >= 5 ? ORANGE_L : RED_L; }
+  function scoreLabelStr(s) {
+    if (s >= 8) return 'Excellent';
+    if (s >= 7) return 'Good';
+    if (s >= 5) return 'Fair';
+    return 'Needs Work';
   }
 
-  function checkY(needed = 20) {
-    if (y + needed > 277) newPage();
-  }
+  function newPage() { doc.addPage(); y = MARGIN; }
+  function checkY(needed = 20) { if (y + needed > H - 22) newPage(); }
+  function gap(n = 6) { y += n; }
 
-  function heading1(text, color = DARK) {
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.setTextColor(...color);
-    checkY(12);
-    doc.text(text, MARGIN, y);
-    y += 10;
-  }
-
-  function heading2(text) {
-    checkY(14);
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function sectionHeading(text) {
+    checkY(20);
+    // Blue left accent bar
+    doc.setFillColor(...BLUE);
+    doc.rect(MARGIN, y, 3, 9, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(12);
     doc.setTextColor(...DARK);
-    doc.text(text, MARGIN, y);
-    y += 7;
+    doc.text(text, MARGIN + 7, y + 6.5);
+    y += 11;
     doc.setDrawColor(...LGRAY);
-    doc.setLineWidth(0.4);
+    doc.setLineWidth(0.3);
     doc.line(MARGIN, y, MARGIN + TW, y);
-    y += 5;
+    y += 7;
   }
 
-  function body(text, indent = 0, color = DARK) {
+  function bodyText(text, color = MID, indent = 0, size = 9.5) {
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
+    doc.setFontSize(size);
     doc.setTextColor(...color);
     const lines = doc.splitTextToSize(text, TW - indent);
-    checkY(lines.length * 5 + 2);
+    checkY(lines.length * 5.2);
     doc.text(lines, MARGIN + indent, y);
-    y += lines.length * 5 + 2;
+    y += lines.length * 5.2 + 2;
   }
 
-  function small(text, color = GRAY) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(...color);
-    const lines = doc.splitTextToSize(text, TW);
-    checkY(lines.length * 4 + 1);
-    doc.text(lines, MARGIN, y);
-    y += lines.length * 4 + 1;
-  }
+  // ── 1. HEADER BANNER ───────────────────────────────────────────────────────
+  // Full-width blue banner
+  doc.setFillColor(...BLUE);
+  doc.rect(0, 0, W, 36, 'F');
 
-  function gap(n = 5) { y += n; }
-
-  // ── Cover ──
-  doc.setFillColor(...ACCENT);
-  doc.rect(0, 0, W, 55, 'F');
+  // Brand name
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
-  doc.setTextColor(255, 255, 255);
-  doc.text('GEO Audit Report', MARGIN, 25);
-  doc.setFontSize(10);
+  doc.setFontSize(14);
+  doc.setTextColor(...WHITE);
+  doc.text('citeable', MARGIN, 13);
+
+  // Report subtitle
   doc.setFont('helvetica', 'normal');
-  doc.text(url, MARGIN, 34);
-  doc.text(`Topic: ${topic}`, MARGIN, 41);
-  doc.text(`Generated: ${date}`, MARGIN, 48);
+  doc.setFontSize(8);
+  doc.setTextColor(148, 180, 255);
+  doc.text('GEO AUDIT REPORT', MARGIN, 20);
 
-  // Score badge
-  const sLabel = scoreLabel(score);
-  doc.setFillColor(255, 255, 255);
-  doc.roundedRect(W - 60, 18, 40, 20, 4, 4, 'F');
-  doc.setTextColor(...ACCENT);
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text(`${score?.toFixed?.(1) ?? score}`, W - 50, 30);
-  doc.setFontSize(7);
-  doc.setTextColor(...GRAY);
-  doc.text('GEO Score', W - 50, 34);
-  doc.text(sLabel, W - 50, 37);
+  // Decorative right side: score teaser
+  if (score != null) {
+    const sRGB = scoreRGB(score);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`${score?.toFixed?.(1) ?? score}`, W - MARGIN - 22, 18, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(148, 180, 255);
+    doc.text('/10', W - MARGIN - 18, 18);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(148, 255, 180);
+    doc.text(scoreLabelStr(score).toUpperCase(), W - MARGIN, 25, { align: 'right' });
+  }
 
-  y = 68;
+  // Date bottom of banner
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(148, 180, 255);
+  doc.text(datetime, W - MARGIN, 32, { align: 'right' });
 
-  // ── Executive Summary ──
+  y = 44;
+
+  // URL + topic
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...BLUE);
+  const urlLines = doc.splitTextToSize(url, TW);
+  doc.text(urlLines, MARGIN, y);
+  y += urlLines.length * 4.5 + 2;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...MID);
+  doc.text(`Topic: ${topic}`, MARGIN, y);
+  y += 8;
+
+  doc.setDrawColor(...LGRAY);
+  doc.setLineWidth(0.3);
+  doc.line(MARGIN, y, MARGIN + TW, y);
+  y += 10;
+
+  // ── 2. EXECUTIVE SUMMARY ───────────────────────────────────────────────────
   if (finalReport?.executive_summary) {
-    heading2('Executive Summary');
-    body(finalReport.executive_summary);
-    gap(4);
+    sectionHeading('Executive Summary');
+
+    const sumLines = doc.splitTextToSize(finalReport.executive_summary, TW - 10);
+    const boxH = sumLines.length * 5.2 + 14;
+    checkY(boxH + 4);
+
+    // Light blue box with left border
+    doc.setFillColor(...BLUE_LITE);
+    doc.roundedRect(MARGIN, y, TW, boxH, 3, 3, 'F');
+    doc.setFillColor(...BLUE);
+    doc.rect(MARGIN, y, 3, boxH, 'F');
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...MID);
+    doc.text(sumLines, MARGIN + 8, y + 8);
+    y += boxH + 10;
   }
 
-  // ── GEO Score Breakdown ──
+  // ── 3. GEO SCORE ───────────────────────────────────────────────────────────
+  sectionHeading('GEO Score');
+  checkY(38);
+
+  const sl     = scoreLabelStr(score);
+  const sRGB   = scoreRGB(score);
+  const sLiteRGB = scoreLiteRGB(score);
+
+  // Score card background
+  doc.setFillColor(...SURFACE);
+  doc.roundedRect(MARGIN, y, TW, 30, 3, 3, 'F');
+  doc.setDrawColor(...LGRAY);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(MARGIN, y, TW, 30, 3, 3, 'S');
+
+  // Score number (left side)
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(34);
+  doc.setTextColor(...sRGB);
+  doc.text(`${score?.toFixed?.(1) ?? score}`, MARGIN + 10, y + 21);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(12);
+  doc.setTextColor(...GRAY);
+  doc.text('/10', MARGIN + 32, y + 21);
+
+  // Label pill (center-left)
+  const pillW = 28;
+  const pillX = MARGIN + 50;
+  doc.setFillColor(...sLiteRGB);
+  doc.roundedRect(pillX, y + 10, pillW, 8, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...sRGB);
+  doc.text(sl.toUpperCase(), pillX + pillW / 2, y + 15.5, { align: 'center' });
+
+  // Progress bar (right side)
+  const barX = MARGIN + 88;
+  const barW = TW - 90;
+  const barH = 6;
+  const barY = y + 12;
+  doc.setFillColor(...LGRAY);
+  doc.roundedRect(barX, barY, barW, barH, 2, 2, 'F');
+  const fillW = barW * Math.min(1, (score ?? 0) / 10);
+  doc.setFillColor(...sRGB);
+  doc.roundedRect(barX, barY, fillW, barH, 2, 2, 'F');
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...GRAY);
+  doc.text(`${Math.round((score ?? 0) * 10)}% GEO score`, barX + barW / 2, barY + barH + 5, { align: 'center' });
+
+  y += 38;
+
+  // ── 4. CRITERIA BREAKDOWN ──────────────────────────────────────────────────
   if (geoAudit?.criteria) {
-    heading2('GEO Score Breakdown');
-    const LABELS = {
-      authority: 'Authority & Credibility',
-      structural_clarity: 'Structural Clarity',
-      quotability: 'Quotability',
-      comprehensiveness: 'Comprehensiveness',
-      semantic_clarity: 'Semantic Clarity',
-      freshness: 'Freshness Signals',
-      question_answering: 'Q&A Format',
-    };
+    checkY(24);
+    sectionHeading('Criteria Breakdown');
+
+    const C1 = 76;
+    const C2 = 22;
+
+    // Table header
+    doc.setFillColor(...SURFACE);
+    doc.rect(MARGIN, y - 3, TW, 8, 'F');
+    doc.setDrawColor(...LGRAY);
+    doc.setLineWidth(0.2);
+    doc.rect(MARGIN, y - 3, TW, 8, 'S');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...GRAY);
+    doc.text('CRITERION',    MARGIN + 3,          y + 2);
+    doc.text('SCORE',        MARGIN + C1 + 3,     y + 2);
+    doc.text('KEY FINDING',  MARGIN + C1 + C2 + 3, y + 2);
+    y += 9;
+
+    let rowAlt = false;
     for (const [key, val] of Object.entries(geoAudit.criteria)) {
-      checkY(14);
-      const label = LABELS[key] || key;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(...DARK);
-      doc.text(`${label}  ${val.score}/10`, MARGIN, y);
-      // Bar
-      const bx = MARGIN + 90;
-      const bw = TW - 90;
-      doc.setFillColor(...LGRAY);
-      doc.rect(bx, y - 3.5, bw, 3, 'F');
-      const pct = Math.min(1, val.score / 10);
-      const fc = val.score >= 8 ? [0, 229, 153] : val.score >= 6.5 ? [255, 215, 0] : val.score >= 4.5 ? [255, 170, 0] : [255, 68, 102];
-      doc.setFillColor(...fc);
-      doc.rect(bx, y - 3.5, bw * pct, 3, 'F');
-      y += 4;
-      if (val.explanation) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7);
-        doc.setTextColor(...GRAY);
-        const exLines = doc.splitTextToSize(val.explanation, TW);
-        doc.text(exLines.slice(0, 2), MARGIN, y);
-        y += Math.min(2, exLines.length) * 3.5 + 3;
-      } else {
-        y += 4;
+      const label    = PDF_CRITERIA_LABELS[key] || key;
+      const finding  = (val.evidence || val.explanation || '').substring(0, 130);
+      const findLines = doc.splitTextToSize(finding, TW - C1 - C2 - 6);
+      const rowH = Math.max(9, findLines.length * 4.3 + 5);
+      checkY(rowH + 2);
+
+      if (rowAlt) {
+        doc.setFillColor(...SURFACE);
+        doc.rect(MARGIN, y - 1, TW, rowH, 'F');
       }
-    }
-    gap(4);
-  }
+      rowAlt = !rowAlt;
 
-  // ── Competitors ──
-  if (competitorData?.competitors?.length) {
-    checkY(20);
-    heading2('Competitive Landscape');
-    if (competitorData.landscape_summary) {
-      body(competitorData.landscape_summary, 0, GRAY);
-      gap(3);
-    }
-    for (const c of competitorData.competitors.slice(0, 5)) {
-      checkY(18);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
       doc.setTextColor(...DARK);
-      doc.text(c.domain, MARGIN, y);
-      y += 5;
-      if (c.key_differentiator) body(c.key_differentiator, 4, GRAY);
-      if (c.why_ai_cites_it)   body(c.why_ai_cites_it, 4, GRAY);
-      y += 2;
-    }
-    gap(4);
-  }
+      doc.text(label, MARGIN + 3, y + 4.5);
 
-  // ── Rewrites ──
-  if (rewrites?.rewrites?.length) {
-    checkY(20);
-    heading2('Before / After Rewrites');
-    for (const r of rewrites.rewrites) {
-      checkY(24);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(...DARK);
-      doc.text(r.weakness_label || r.weakness_addressed || 'Rewrite', MARGIN, y);
-      y += 5;
+      const sc  = val.score ?? 0;
+      const fc  = scoreRGB(sc);
+      const fcL = scoreLiteRGB(sc);
+      doc.setFillColor(...fcL);
+      doc.roundedRect(MARGIN + C1 + 2, y + 1.5, 16, 5.5, 1.5, 1.5, 'F');
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7.5);
+      doc.setTextColor(...fc);
+      doc.text(`${sc}/10`, MARGIN + C1 + 10, y + 5.5, { align: 'center' });
+
+      doc.setFont('helvetica', 'normal');
       doc.setTextColor(...GRAY);
-      doc.text('BEFORE', MARGIN, y);
-      y += 3;
-      body(r.before, 0, [100, 116, 139]);
-      doc.setFont('helvetica', 'bold');
       doc.setFontSize(7.5);
-      doc.setTextColor(...ACCENT);
-      doc.text('AFTER', MARGIN, y);
-      y += 3;
-      body(r.after, 0, DARK);
-      y += 4;
+      doc.text(findLines, MARGIN + C1 + C2 + 3, y + 4.5);
+
+      y += rowH;
+      doc.setDrawColor(...LGRAY);
+      doc.setLineWidth(0.15);
+      doc.line(MARGIN, y, MARGIN + TW, y);
     }
+    gap(10);
   }
 
-  // ── Action Plan ──
+  // ── 5. TOP WEAKNESSES ──────────────────────────────────────────────────────
+  if (geoAudit?.top_weaknesses?.length) {
+    checkY(20);
+    sectionHeading('Top Weaknesses');
+
+    for (const [i, w] of geoAudit.top_weaknesses.entries()) {
+      checkY(24);
+      const issueLines = doc.splitTextToSize(w.issue || w.feedback || '', TW - 16);
+      const cardH = Math.max(14, issueLines.length * 4.8 + (w.impact ? 12 : 4));
+
+      // Card
+      doc.setFillColor(...RED_L);
+      doc.roundedRect(MARGIN, y, TW, cardH, 2, 2, 'F');
+      doc.setFillColor(...RED);
+      doc.rect(MARGIN, y, 3, cardH, 'F');
+
+      // Number
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...RED);
+      doc.text(`${i + 1}`, MARGIN + 8, y + 7);
+
+      // Issue
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...DARK);
+      doc.text(issueLines, MARGIN + 15, y + 7);
+
+      if (w.impact) {
+        const impY = y + issueLines.length * 4.8 + 5;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(...GRAY);
+        const impLines = doc.splitTextToSize(`Impact: ${w.impact}`, TW - 18);
+        doc.text(impLines, MARGIN + 15, impY);
+      }
+
+      y += cardH + 5;
+    }
+    gap(4);
+  }
+
+  // ── 6. ACTION PLAN ─────────────────────────────────────────────────────────
   if (finalReport?.action_plan?.length) {
     checkY(20);
-    heading2('Prioritized Action Plan');
+    sectionHeading('Action Plan');
+
     for (const item of finalReport.action_plan) {
-      checkY(18);
-      doc.setFillColor(...ACCENT);
-      doc.circle(MARGIN + 3, y - 1, 3, 'F');
+      const effortRGB  = item.effort === 'low' ? GREEN  : item.effort === 'medium' ? ORANGE  : RED;
+      const effortLite = item.effort === 'low' ? GREEN_L : item.effort === 'medium' ? ORANGE_L : RED_L;
+      const actionLines = doc.splitTextToSize(item.action || '', TW - 34);
+      const implLines   = item.implementation
+        ? doc.splitTextToSize(item.implementation, TW - 20)
+        : [];
+      const cardH = Math.max(18, actionLines.length * 5 + (implLines.length > 0 ? implLines.length * 4.5 + 10 : 8));
+      checkY(cardH + 6);
+
+      // Card background
+      doc.setFillColor(...SURFACE);
+      doc.roundedRect(MARGIN, y, TW, cardH, 2, 2, 'F');
+      doc.setDrawColor(...LGRAY);
+      doc.setLineWidth(0.2);
+      doc.roundedRect(MARGIN, y, TW, cardH, 2, 2, 'S');
+      // Left effort color
+      doc.setFillColor(...effortRGB);
+      doc.rect(MARGIN, y, 3, cardH, 'F');
+
+      // Priority number
+      doc.setFillColor(...effortLite);
+      doc.circle(MARGIN + 10, y + 7, 4, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...effortRGB);
+      doc.text(`${item.priority}`, MARGIN + 10, y + 8.5, { align: 'center' });
+
+      // Effort badge (top-right)
+      if (item.effort) {
+        const bw = 22;
+        const bx = MARGIN + TW - bw - 3;
+        doc.setFillColor(...effortRGB);
+        doc.roundedRect(bx, y + 3, bw, 6, 2, 2, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(...WHITE);
+        doc.text(item.effort.toUpperCase(), bx + bw / 2, y + 7.5, { align: 'center' });
+      }
+
+      // Action title
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(...DARK);
+      doc.text(actionLines, MARGIN + 18, y + 8);
+
+      // Implementation
+      if (implLines.length > 0) {
+        const implY = y + actionLines.length * 5 + 7;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(...GRAY);
+        doc.text(implLines, MARGIN + 18, implY);
+      }
+
+      y += cardH + 5;
+    }
+    gap(4);
+  }
+
+  // ── 7. COMPETITORS ─────────────────────────────────────────────────────────
+  if (competitorData?.competitors?.length) {
+    checkY(20);
+    sectionHeading('Top AI-Cited Competitors');
+
+    for (const [i, c] of competitorData.competitors.slice(0, 6).entries()) {
+      checkY(20);
+      const diffLines = c.key_differentiator
+        ? doc.splitTextToSize(c.key_differentiator, TW - 50)
+        : [];
+      const cardH = Math.max(14, diffLines.length * 4.3 + 10);
+
+      doc.setFillColor(...SURFACE);
+      doc.roundedRect(MARGIN, y, TW, cardH, 2, 2, 'F');
+      doc.setDrawColor(...LGRAY);
+      doc.setLineWidth(0.2);
+      doc.roundedRect(MARGIN, y, TW, cardH, 2, 2, 'S');
+
+      // Rank
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...GRAY);
+      doc.text(`#${i + 1}`, MARGIN + 5, y + cardH / 2 + 2.5);
+
+      // Domain
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9);
-      doc.setTextColor(...DARK);
-      const aLines = doc.splitTextToSize(item.action, TW - 10);
-      doc.text(aLines, MARGIN + 9, y);
-      y += aLines.length * 5 + 1;
-      if (item.implementation) body(item.implementation, 9, GRAY);
-      if (item.effort || item.timeline) {
-        small(`Effort: ${item.effort || 'N/A'} · Timeline: ${item.timeline || 'N/A'}`);
+      doc.setTextColor(...BLUE);
+      doc.text(c.domain, MARGIN + 16, y + 6);
+
+      // Differentiator
+      if (diffLines.length > 0) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(...GRAY);
+        doc.text(diffLines, MARGIN + 16, y + 11);
       }
-      y += 4;
+
+      y += cardH + 4;
     }
-  }
-
-  // ── Closing insight ──
-  if (finalReport?.closing_insight) {
-    checkY(20);
     gap(4);
-    doc.setFillColor(240, 249, 252);
-    const ciLines = doc.splitTextToSize(finalReport.closing_insight, TW - 8);
-    doc.roundedRect(MARGIN, y - 2, TW, ciLines.length * 5 + 10, 3, 3, 'F');
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(8.5);
-    doc.setTextColor(...GRAY);
-    doc.text(ciLines, MARGIN + 4, y + 4);
-    y += ciLines.length * 5 + 12;
   }
 
-  // Footer
+  // ── FOOTER on every page ───────────────────────────────────────────────────
   const totalPages = doc.getNumberOfPages();
   for (let p = 1; p <= totalPages; p++) {
     doc.setPage(p);
+    doc.setDrawColor(...LGRAY);
+    doc.setLineWidth(0.3);
+    doc.line(MARGIN, H - 14, W - MARGIN, H - 14);
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
+    doc.setFontSize(7.5);
     doc.setTextColor(...GRAY);
-    doc.text(`GEO Agent Report · ${date} · Page ${p} of ${totalPages}`, MARGIN, 290);
-    doc.text(url, W - MARGIN, 290, { align: 'right' });
+    doc.text('citeable — GEO Audit Report', MARGIN, H - 10);
+    doc.text(dateStr, W / 2, H - 10, { align: 'center' });
+    doc.text(`${p} / ${totalPages}`, W - MARGIN, H - 10, { align: 'right' });
   }
 
-  doc.save(`geo-report-${domain}-${new Date().toISOString().slice(0, 10)}.pdf`);
+  doc.save(`citeable-geo-report-${domain}-${new Date().toISOString().slice(0, 10)}.pdf`);
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────

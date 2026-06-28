@@ -1,4 +1,4 @@
-import Groq from 'groq-sdk';
+import { groqComplete } from './groqWithFallback.js';
 
 // Agent 2 — GEO Auditor
 // Scores content against 7 research-backed GEO criteria.
@@ -167,11 +167,8 @@ Return ONLY this JSON (no markdown code fences):
 }
 
 export async function auditGEOContent(parsedContent) {
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-  const completion = await groq.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    temperature: 0.3,
+  const completion = await groqComplete({
+    temperature: 0,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

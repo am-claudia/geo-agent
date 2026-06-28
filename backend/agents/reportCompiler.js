@@ -1,4 +1,4 @@
-import Groq from 'groq-sdk';
+import { groqComplete } from './groqWithFallback.js';
 
 // Agent 5 — Report Compiler
 // Synthesizes all agent outputs into a final structured GEO Audit Report.
@@ -18,8 +18,6 @@ function scoreRating(score) {
 
 export async function compileReport(agentOutputs) {
   const { parsedContent, geoAudit, competitorData, rewrites } = agentOutputs;
-
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   const criteriaNames = {
     evidence_density: 'Evidence Density',
@@ -134,9 +132,8 @@ Return ONLY this JSON:
   "closing_insight": "<2-3 sentences: strategic perspective on the biggest GEO opportunity for this page given the competitive landscape. What's the single highest-leverage thing the team should focus on?>"
 }`;
 
-  const completion = await groq.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    temperature: 0.4,
+  const completion = await groqComplete({
+    temperature: 0,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

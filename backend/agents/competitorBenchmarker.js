@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Groq from 'groq-sdk';
+import { groqComplete } from './groqWithFallback.js';
 
 // Agent 3 — Competitor Benchmarker
 // Searches Serper for authoritative sources on the topic, then uses Gemini
@@ -134,8 +134,6 @@ export async function benchmarkCompetitors(topic, inputUrl) {
     };
   }
 
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
   const prompt = `Analyze these search results for the topic "${topic}" and identify the 3–5 sources most likely to be cited by AI systems. For each, explain specifically which GEO signals make it citation-worthy.
 
 SEARCH RESULTS:
@@ -168,8 +166,7 @@ Return ONLY this JSON:
   "dominant_content_types": ["<e.g., long-form guides>", "<e.g., research roundups>"]
 }`;
 
-  const completion = await groq.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
+  const completion = await groqComplete({
     temperature: 0.4,
     response_format: { type: 'json_object' },
     messages: [

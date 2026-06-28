@@ -4,71 +4,129 @@
   gap: 40px;
 }
 
-/* ─── Explainer block ─── */
-.explainer {
-  background: var(--accent-dim);
-  border: 1px solid var(--border-mid);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
+/* ─── Chevron ─── */
+.chevronIcon {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.showMoreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.showMoreBtn:hover {
+  color: var(--accent-text);
+}
+
+/* ─── Explainer toggle ─── */
+.explainerToggleWrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  transition: all var(--transition);
+  gap: 0;
 }
 
-.explainerRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+.explainerToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+  text-align: left;
+  transition: color 0.15s ease;
 }
 
-.explainerItem {
+.explainerToggle:hover {
+  color: var(--accent-text);
+}
+
+.explainerBody {
+  overflow: hidden;
+}
+
+.explainerBodyInner {
+  padding: 16px 20px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-top: 10px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.explainerCards {
   display: flex;
+  flex-direction: column;
   gap: 10px;
+}
+
+.explainerCard {
+  display: flex;
   align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  transition: background var(--transition), border-color var(--transition);
 }
 
-.explainerIcon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
+.explainerCardIcon {
+  font-size: 18px;
   line-height: 1;
-  margin-top: 2px;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
-.explainerTitle {
+.explainerCardTitle {
   display: block;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
   transition: color var(--transition);
 }
 
-.explainerDesc {
-  font-size: 0.8rem;
+.explainerCardDesc {
+  font-size: 12px;
   color: var(--text-secondary);
   line-height: 1.55;
   transition: color var(--transition);
 }
 
-.explainerDesc strong {
-  color: var(--text-bright);
-  font-weight: 700;
+.explainerCardDesc strong {
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
-@media (max-width: 600px) {
-  .explainerRow { grid-template-columns: 1fr; gap: 14px; }
-}
-
-/* ─── LLM Prompt block ─── */
+/* ─── LLM Prompt block — left border blue ─── */
 .promptBlock {
   background: var(--bg-card);
-  border: 1px solid var(--border-mid);
+  border: 1px solid var(--border);
+  border-left: 3px solid #2563EB;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-card);
-  transition: all var(--transition);
+  transition: border-color var(--transition), background var(--transition);
 }
 
 .promptHeader {
@@ -76,7 +134,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px 20px 16px;
+  padding: 20px 24px 16px;
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   transition: border-color var(--transition);
@@ -84,28 +142,21 @@
 
 .promptTitleGroup {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  flex-direction: column;
+  gap: 4px;
   flex: 1;
   min-width: 0;
 }
 
-.promptIcon {
-  font-size: 1.4rem;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
 .promptTitle {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
   transition: color var(--transition);
 }
 
 .promptSubtitle {
-  font-size: 0.82rem;
+  font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.5;
   transition: color var(--transition);
@@ -113,49 +164,47 @@
 
 .promptSubtitle strong {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 600;
 }
 
+/* Primary CTA copy button */
 .copyBtn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-mid);
-  background: var(--bg-card);
-  color: var(--text-primary);
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 6px;
+  border: none;
+  background: #2563EB;
+  color: #FFFFFF;
   font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease;
   white-space: nowrap;
 }
 
 .copyBtn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-dim);
+  background: #1D4ED8;
 }
 
 .copyBtnDone {
-  border-color: var(--score-great) !important;
-  color: var(--score-great) !important;
-  background: rgba(0, 229, 153, 0.08) !important;
+  background: #16A34A !important;
 }
 
 .promptText {
   display: block;
-  padding: 18px 20px;
+  padding: 20px 24px;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 13px;
   color: var(--text-primary);
   line-height: 1.75;
   white-space: pre-wrap;
   word-break: break-word;
-  background: var(--bg-surface);
+  background: var(--bg-base);
   margin: 0;
   transition: all var(--transition);
   max-height: 420px;
@@ -164,7 +213,7 @@
 
 .empty {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 15px;
   text-align: center;
   padding: 60px 0;
 }
@@ -177,17 +226,16 @@
 }
 
 .sectionTitle {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  letter-spacing: -0.01em;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
   transition: color var(--transition), border-color var(--transition);
 }
 
 .sectionHint {
-  font-size: 0.82rem;
+  font-size: 13px;
   color: var(--text-secondary);
   margin-top: -6px;
   transition: color var(--transition);
@@ -197,7 +245,7 @@
 .items {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 /* ─── Rewrite item ─── */
@@ -206,32 +254,70 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background var(--transition);
+  transition: border-color 0.15s ease, background var(--transition);
 }
 
 .item:hover {
   border-color: var(--border-mid);
-  box-shadow: var(--shadow-glow);
 }
 
 .itemHeader {
-  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: border-color var(--transition);
+}
+
+.itemToggleBtn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.itemToggleBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+
+/* ─── Section header row (title + collapse button) ─── */
+.sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 18px 20px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.2s ease;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  transition: border-color var(--transition);
 }
 
-.itemHeader:hover {
-  background: var(--bg-card-hover);
+.collapseAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.collapseAllBtn:hover {
+  color: var(--accent-text);
 }
 
 .itemMeta {
@@ -244,18 +330,13 @@
 
 .itemNum {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent-dim);
-  border: 1px solid var(--border-mid);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--accent-text);
-  transition: all var(--transition);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  min-width: 20px;
+  transition: color var(--transition);
 }
 
 .itemInfo {
@@ -267,86 +348,103 @@
 }
 
 .itemLabel {
-  font-size: 0.92rem;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--text-bright);
+  color: var(--text-primary);
   transition: color var(--transition);
 }
 
-.itemScore {
-  font-size: 0.75rem;
+/* Score badge colored by tier */
+.itemScoreBadge {
+  display: inline-block;
+  font-size: 11px;
   font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+  line-height: 1.4;
+  align-self: flex-start;
 }
 
-.chevron {
-  flex-shrink: 0;
-  color: var(--text-secondary);
-  transition: transform 0.25s ease, color var(--transition);
-}
-
-.chevronOpen {
-  transform: rotate(180deg);
-}
-
-/* ─── Item body (collapsible) ─── */
+/* ─── Item body ─── */
 .itemBody {
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ─── Before / After panels ─── */
 .panels {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: stretch;
   gap: 0;
-  padding: 0 20px 20px;
-  flex-wrap: wrap;
+  padding: 12px 20px 20px;
 }
 
 .panel {
-  flex: 1;
-  min-width: 200px;
-  padding: 16px;
-  border-radius: var(--radius-md);
+  min-width: 0;
+  padding: 20px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-height: 140px;
+  max-height: 300px;
+  overflow: hidden;
 }
 
 .panelBefore {
-  background: rgba(255, 68, 102, 0.06);
-  border: 1px solid rgba(255, 68, 102, 0.20);
+  background: color-mix(in srgb, var(--danger) 5%, var(--bg-card));
+  border: 1px solid color-mix(in srgb, var(--danger) 15%, transparent);
   opacity: 0.9;
 }
 
 .panelAfter {
-  background: rgba(0, 229, 153, 0.06);
-  border: 1px solid rgba(0, 229, 153, 0.20);
+  background: color-mix(in srgb, var(--success) 5%, var(--bg-card));
+  border: 1px solid color-mix(in srgb, var(--success) 15%, transparent);
 }
 
 .panelLabel {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   color: var(--text-secondary);
   transition: color var(--transition);
 }
 
 .panelDot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .panelText {
-  font-size: 0.88rem;
+  flex: 1;
+  font-size: 14px;
   color: var(--text-primary);
   line-height: 1.65;
+  overflow-y: auto;
   transition: color var(--transition);
+}
+
+.panelCode {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  overflow: auto;
+  white-space: pre;
+  line-height: 1.65;
+  color: var(--text-primary);
+  transition: all var(--transition);
 }
 
 .panelArrow {
@@ -359,50 +457,54 @@
   align-self: center;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .panelArrow { display: none; }
-  .panels { flex-direction: column; gap: 12px; }
+  .panels { grid-template-columns: 1fr; gap: 12px; }
 }
 
-/* ─── Why better ─── */
+/* ─── Why better — blue left border ─── */
 .whyBetter {
   display: flex;
   gap: 8px;
-  padding: 12px 20px 0;
+  margin: 0 20px 12px;
+  padding: 12px 16px;
+  background: var(--accent-dim);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   align-items: flex-start;
   flex-wrap: wrap;
+  transition: background var(--transition);
 }
 
 .whyLabel {
   flex-shrink: 0;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--accent-text);
   margin-top: 1px;
-  transition: color var(--transition);
 }
 
 .whyText {
-  font-size: 0.83rem;
-  color: var(--text-secondary);
+  font-size: 13px;
+  color: var(--text-primary);
   line-height: 1.55;
   transition: color var(--transition);
 }
 
-/* ─── GEO signals ─── */
+/* ─── GEO signals — blue pill style ─── */
 .signals {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 10px 20px 20px;
+  padding: 4px 20px 20px;
   flex-wrap: wrap;
 }
 
 .signalsLabel {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-secondary);
@@ -414,36 +516,77 @@
 .signalTags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
 }
 
 .signalTag {
-  font-size: 0.72rem;
-  padding: 3px 9px;
-  border-radius: 20px;
-  border: 1px solid var(--border-mid);
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent-glow);
   background: var(--accent-dim);
   color: var(--accent-text);
   font-weight: 500;
-  transition: all var(--transition);
+}
+
+/* ─── Effort/impact badge CSS classes (dark-mode aware) ─── */
+.badgeLow {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 30%, transparent);
+  background: color-mix(in srgb, var(--success) 8%, var(--bg-card));
+}
+
+.badgeMedium {
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 30%, transparent);
+  background: color-mix(in srgb, var(--warning) 8%, var(--bg-card));
+}
+
+.badgeHigh {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 30%, transparent);
+  background: color-mix(in srgb, var(--danger) 8%, var(--bg-card));
+}
+
+.badgeDefault {
+  color: var(--text-secondary);
+  border-color: var(--border);
+  background: var(--bg-card);
 }
 
 /* ─── Quick wins ─── */
 .quickWins {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .quickWin {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 14px 16px;
+  gap: 0;
+  padding: 16px 20px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  transition: all var(--transition);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.15s ease, background var(--transition);
+}
+
+.quickWinClickable {
+  cursor: pointer;
+}
+
+.quickWinClickable:hover {
+  border-color: var(--border-mid);
+  background: var(--bg-card-hover);
+}
+
+.quickWinOpen {
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+:root[data-theme="dark"] .quickWinOpen {
+  border-color: rgba(129, 140, 248, 0.3) !important;
 }
 
 .qwHeader {
@@ -454,10 +597,25 @@
   flex-wrap: wrap;
 }
 
+.qwTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
 .qwAction {
-  font-size: 0.88rem;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
+  transition: color var(--transition);
+}
+
+.qwHint {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 500;
   transition: color var(--transition);
 }
 
@@ -465,21 +623,24 @@
   display: flex;
   gap: 6px;
   flex-shrink: 0;
+  align-items: center;
 }
 
 .qwBadge {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   padding: 2px 8px;
-  border-radius: 20px;
-  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  border: 1px solid;
   text-transform: capitalize;
-  opacity: 0.85;
 }
 
 .qwExample {
-  font-size: 0.8rem;
+  font-size: 13px;
   color: var(--text-secondary);
   font-style: italic;
   transition: color var(--transition);
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  margin-top: 10px;
 }

@@ -21,23 +21,27 @@ export default function CompetitorCard({ competitor, index }) {
         </div>
       </div>
 
-      <div className={styles.differentiator}>
-        <span className={styles.differentiatorLabel}>Key differentiator</span>
-        <p className={styles.differentiatorText}>{key_differentiator}</p>
-      </div>
+      <div className={styles.contentRow}>
+        <div className={styles.mainContent}>
+          <div className={styles.differentiator}>
+            <span className={styles.differentiatorLabel}>Key differentiator</span>
+            <p className={styles.differentiatorText}>{key_differentiator}</p>
+          </div>
 
-      <div className={styles.whyBlock}>
-        <span className={styles.whyLabel}>Why AI cites this</span>
-        <p className={styles.whyText}>{why_ai_cites_it}</p>
-      </div>
-
-      {geo_strengths && geo_strengths.length > 0 && (
-        <div className={styles.strengths}>
-          {geo_strengths.map((s, i) => (
-            <span key={i} className={styles.strengthTag}>{s}</span>
-          ))}
+          <div className={styles.whyBlock}>
+            <span className={styles.whyLabel}>Why AI cites this</span>
+            <p className={styles.whyText}>{why_ai_cites_it}</p>
+          </div>
         </div>
-      )}
+
+        {geo_strengths && geo_strengths.length > 0 && (
+          <div className={styles.strengths}>
+            {geo_strengths.map((s, i) => (
+              <div key={i} className={styles.strengthTag}>{s}</div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

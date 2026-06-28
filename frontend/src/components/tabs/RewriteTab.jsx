@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './RewriteTab.module.css';
 
+function isCodeContent(text) {
+  if (!text || typeof text !== 'string') return false;
+  const trimmed = text.trim();
+  return trimmed.startsWith('{') || trimmed.startsWith('[') || trimmed.includes('"@context"') || trimmed.includes('"@type"');
+}
+
 function boldNumbers(text) {
   if (!text) return null;
   return text.split(/(\b\d+(?:\.\d+)?[%x]?\b)/).map((part, i) =>
@@ -9,8 +15,16 @@ function boldNumbers(text) {
   );
 }
 
+
+function scoreColor(score) {
+  if (score == null) return '#6B7280';
+  if (score <= 4) return '#DC2626';
+  if (score <= 6) return '#D97706';
+  return '#16A34A';
+}
+
 function RewriteItem({ rewrite, index }) {
-  const [expanded, setExpanded] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
 
   const {
     weakness_label,
@@ -22,6 +36,8 @@ function RewriteItem({ rewrite, index }) {
     geo_signals_added = [],
   } = rewrite;
 
+  const tierColor = scoreColor(weakness_score);
+
   return (
     <motion.div
       className={styles.item}
@@ -29,81 +45,97 @@ function RewriteItem({ rewrite, index }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
     >
-      <button
-        className={styles.itemHeader}
-        onClick={() => setExpanded(e => !e)}
-        aria-expanded={expanded}
-      >
+      <div className={styles.itemHeader}>
         <div className={styles.itemMeta}>
           <span className={styles.itemNum}>{index + 1}</span>
           <div className={styles.itemInfo}>
             <span className={styles.itemLabel}>{weakness_label || weakness_addressed}</span>
             {weakness_score != null && (
-              <span className={styles.itemScore} style={{ color: weakness_score <= 4 ? 'var(--score-poor)' : weakness_score <= 6 ? 'var(--score-fair)' : 'var(--score-good)' }}>
-                Score: {weakness_score}/10
+              <span
+                className={styles.itemScoreBadge}
+                style={{ color: tierColor, borderColor: tierColor }}
+              >
+                {weakness_score}/10
               </span>
             )}
           </div>
         </div>
-        <svg
-          className={`${styles.chevron} ${expanded ? styles.chevronOpen : ''}`}
-          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        <button
+          className={styles.itemToggleBtn}
+          onClick={() => setCollapsed(c => !c)}
+          aria-label={collapsed ? 'Expand rewrite' : 'Collapse rewrite'}
         >
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
+          <svg
+            className={`${styles.chevronIcon} ${collapsed ? '' : styles.chevronOpen}`}
+            width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+      </div>
 
       <AnimatePresence initial={false}>
-        {expanded && (
+        {!collapsed && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className={styles.itemBody}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
           >
-            <div className={styles.panels}>
-              <div className={`${styles.panel} ${styles.panelBefore}`}>
-                <div className={styles.panelLabel}>
-                  <span className={styles.panelDot} style={{ background: 'var(--score-poor)' }} />
-                  Before
+            <div className={styles.itemBody}>
+              <div className={styles.panels}>
+                <div className={`${styles.panel} ${styles.panelBefore}`}>
+                  <div className={styles.panelLabel}>
+                    <span className={styles.panelDot} style={{ background: 'var(--score-poor)' }} />
+                    Before
+                  </div>
+                  {before
+                    ? <p className={styles.panelText}>{before}</p>
+                    : <p className={styles.panelText} style={{ fontStyle: 'italic', opacity: 0.5 }}>No original content captured for this section.</p>
+                  }
                 </div>
-                <p className={styles.panelText}>{before}</p>
+
+                <div className={styles.panelArrow}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </div>
+
+                <div className={`${styles.panel} ${styles.panelAfter}`}>
+                  <div className={styles.panelLabel}>
+                    <span className={styles.panelDot} style={{ background: 'var(--score-great)' }} />
+                    After
+                  </div>
+                  {!after
+                    ? <p className={styles.panelText} style={{ fontStyle: 'italic', opacity: 0.5 }}>Rewrite not generated for this section.</p>
+                    : isCodeContent(after)
+                      ? <pre className={styles.panelCode}><code>{after}</code></pre>
+                      : <p className={styles.panelText}>{after}</p>
+                  }
+                </div>
               </div>
 
-              <div className={styles.panelArrow}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </div>
-
-              <div className={`${styles.panel} ${styles.panelAfter}`}>
-                <div className={styles.panelLabel}>
-                  <span className={styles.panelDot} style={{ background: 'var(--score-great)' }} />
-                  After
+              {why_better && (
+                <div className={styles.whyBetter}>
+                  <span className={styles.whyLabel}>Why this works:</span>
+                  <span className={styles.whyText}>{boldNumbers(why_better)}</span>
                 </div>
-                <p className={styles.panelText}>{after}</p>
-              </div>
+              )}
+
+              {geo_signals_added.length > 0 && (
+                <div className={styles.signals}>
+                  <span className={styles.signalsLabel}>GEO signals added:</span>
+                  <div className={styles.signalTags}>
+                    {geo_signals_added.map((s, i) => (
+                      <span key={i} className={styles.signalTag}>{s ? s.charAt(0).toUpperCase() + s.slice(1) : s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-
-            {why_better && (
-              <div className={styles.whyBetter}>
-                <span className={styles.whyLabel}>Why this works:</span>
-                <span className={styles.whyText}>{boldNumbers(why_better)}</span>
-              </div>
-            )}
-
-            {geo_signals_added.length > 0 && (
-              <div className={styles.signals}>
-                <span className={styles.signalsLabel}>GEO signals added:</span>
-                <div className={styles.signalTags}>
-                  {geo_signals_added.map((s, i) => (
-                    <span key={i} className={styles.signalTag}>{s ? s.charAt(0).toUpperCase() + s.slice(1) : s}</span>
-                  ))}
-                </div>
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -111,36 +143,62 @@ function RewriteItem({ rewrite, index }) {
   );
 }
 
+const EFFORT_CLASS = {
+  low:    'badgeLow',
+  medium: 'badgeMedium',
+  high:   'badgeHigh',
+};
+
 function QuickWin({ win, index }) {
-  const effortColor = {
-    low: 'var(--score-great)',
-    medium: 'var(--score-fair)',
-    high: 'var(--score-poor)',
-  };
+  const [exampleOpen, setExampleOpen] = useState(false);
+  const effortClass = styles[EFFORT_CLASS[win.effort]] || styles.badgeDefault;
+  const impactClass = styles[EFFORT_CLASS[win.impact]] || styles.badgeDefault;
+  const hasExample = Boolean(win.example);
 
   return (
     <motion.div
-      className={styles.quickWin}
+      className={`${styles.quickWin} ${hasExample ? styles.quickWinClickable : ''} ${exampleOpen ? styles.quickWinOpen : ''}`}
+      onClick={hasExample ? () => setExampleOpen(o => !o) : undefined}
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06 }}
     >
       <div className={styles.qwHeader}>
-        <span className={styles.qwAction}>{win.action}</span>
+        <div className={styles.qwTitleGroup}>
+          <span className={styles.qwAction}>{win.action}</span>
+          {hasExample && (
+            <span className={styles.qwHint}>
+              {exampleOpen ? 'Click to hide example' : 'Click to see example'}
+            </span>
+          )}
+        </div>
         <div className={styles.qwBadges}>
           {win.effort && (
-            <span className={styles.qwBadge} style={{ color: effortColor[win.effort] || 'var(--text-secondary)' }}>
+            <span className={`${styles.qwBadge} ${effortClass}`}>
               {win.effort} effort
             </span>
           )}
           {win.impact && (
-            <span className={styles.qwBadge} style={{ color: effortColor[win.impact] || 'var(--text-secondary)' }}>
+            <span className={`${styles.qwBadge} ${impactClass}`}>
               {win.impact} impact
             </span>
           )}
         </div>
       </div>
-      {win.example && <p className={styles.qwExample}>e.g. {win.example}</p>}
+      <AnimatePresence initial={false}>
+        {exampleOpen && win.example && (
+          <motion.p
+            className={styles.qwExample}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            e.g. {win.example}
+          </motion.p>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -148,39 +206,102 @@ function QuickWin({ win, index }) {
 function generateLLMPrompt(rewrites, geoAudit, url, topic) {
   const score = geoAudit?.overall_score;
   const weaknesses = geoAudit?.top_weaknesses || [];
+  const strengths = geoAudit?.strengths || [];
   const items = rewrites?.rewrites || [];
 
   const weaknessList = weaknesses.length > 0
     ? weaknesses.map(w => {
         const label = w.criterion.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-        return `- ${label}: ${w.feedback || 'needs improvement'}`;
+        const scoreNote = w.score != null ? ` (score: ${w.score}/10)` : '';
+        return `- ${label}${scoreNote}: ${w.feedback || 'needs improvement'}`;
       }).join('\n')
     : '- See audit results for specific weaknesses';
 
-  const rewriteAreas = items.length > 0
-    ? items.map(r => r.weakness_label || r.weakness_addressed).filter(Boolean).join(', ')
-    : 'all content sections';
+  const strengthsList = strengths.length > 0
+    ? strengths.map(s => `- ${s}`).join('\n')
+    : '(none identified)';
 
-  return `You are a content expert specializing in Generative Engine Optimization (GEO). I need you to rewrite the content on this page so it is more likely to be cited by AI systems like ChatGPT, Perplexity, and Google AI Overviews.
+  const rewriteSections = items.length > 0
+    ? items.map((r, i) => {
+        const label = r.weakness_label || r.weakness_addressed || `Section ${i + 1}`;
+        const scoreNote = r.weakness_score != null ? ` (score: ${r.weakness_score}/10)` : '';
+        return `  ${i + 1}. ${label}${scoreNote}`;
+      }).join('\n')
+    : '  - All content sections';
 
-Page: ${url || '[paste your URL]'}
+  return `You are an expert content strategist specializing in Generative Engine Optimization (GEO). Your task is to rewrite the following page so it gets cited more often by AI systems like ChatGPT, Perplexity, Claude, and Google AI Overviews.
+
+═══════════════════════════════════════
+PAGE CONTEXT
+═══════════════════════════════════════
+URL: ${url || '[your URL]'}
 Topic: ${topic || '[your topic]'}
-Current GEO Score: ${score != null ? `${score}/10` : 'see audit'}
+Current GEO Score: ${score != null ? `${score}/10` : '[see audit]'}
 
-Key weaknesses to address:
+═══════════════════════════════════════
+WEAKNESSES TO FIX (highest priority)
+═══════════════════════════════════════
 ${weaknessList}
 
-Specific sections needing rewriting: ${rewriteAreas}
+═══════════════════════════════════════
+STRENGTHS TO PRESERVE
+═══════════════════════════════════════
+${strengthsList}
 
-Please rewrite the content with these GEO improvements:
-1. Add quotable, specific statements with concrete data points and statistics that AI can cite verbatim.
-2. Include a Q&A section that directly answers questions users ask AI about this topic.
-3. Strengthen authority signals: add credentials, cite sources, use precise expert language.
-4. Improve structural clarity: use clear H2 and H3 headings organized by sub-topic.
-5. Ensure comprehensive coverage so this page is the definitive source on the topic.
-6. Add a brief definition or summary at the top that AI can use as a direct answer.
+═══════════════════════════════════════
+PRIORITY SECTIONS TO REWRITE
+═══════════════════════════════════════
+${rewriteSections}
 
-Keep the core message and facts of the original content. Focus on making each section standalone and citable. The goal is for AI to confidently reference this page as a trusted source.`;
+═══════════════════════════════════════
+REWRITE REQUIREMENTS
+═══════════════════════════════════════
+
+1. QUOTABLE STATEMENTS
+   - Add 4–6 specific, standalone sentences with precise statistics or facts
+   - Each key claim must be self-contained and citable without surrounding context
+   - Format: "[Specific claim] according to [source], [concrete number/fact]"
+   - Avoid vague language like "many experts say" — use named sources
+
+2. DIRECT Q&A SECTION
+   - Add a dedicated FAQ section with 5–7 questions real users ask AI about this topic
+   - Each answer: 2–4 sentences max, direct and authoritative
+   - Use exact phrasing from common search queries (what, how, why, when, best)
+   - Place this section near the top of the page
+
+3. AUTHORITY SIGNALS
+   - Add author name, credentials, and publication/update date visibly
+   - Cite specific studies, reports, or data sources by name and year
+   - Include named expert quotes where relevant (real or representative)
+   - Add "According to [org/study]..." framing for key claims
+
+4. STRUCTURAL CLARITY
+   - Use H2/H3 headings that mirror how people ask questions about this topic
+   - Open with a 2–3 sentence definition/summary AI can use as a direct answer
+   - Break paragraphs into 3–5 sentence chunks maximum
+   - Add a "Key Takeaways" or "Quick Summary" bullet list at the top
+
+5. SCHEMA MARKUP
+   - Recommend the most appropriate schema.org type for this page
+   - Provide complete JSON-LD markup with all key properties filled in
+   - Include FAQPage schema if a Q&A section is added
+
+6. COMPREHENSIVE COVERAGE
+   - Ensure the page answers every sub-question a user might ask about this topic
+   - Add a "What you'll learn" or table of contents section if the page is long
+   - Cover common objections, misconceptions, or related concepts
+
+═══════════════════════════════════════
+OUTPUT FORMAT
+═══════════════════════════════════════
+Please provide:
+1. Rewritten opening section (first ~200 words including summary + key takeaways)
+2. Rewritten version of each priority section listed above (before → after)
+3. New FAQ/Q&A section (5–7 Q&As)
+4. Complete JSON-LD schema markup
+5. List of all GEO signals added (one per line)
+
+Preserve the original brand voice, core facts, and key messaging. Do not add fictional data — if you need statistics, use placeholders like "[stat from your research]". Focus on structure and citability, not keyword density.`;
 }
 
 function LLMPromptBlock({ rewrites, geoAudit, url, topic }) {
@@ -203,13 +324,10 @@ function LLMPromptBlock({ rewrites, geoAudit, url, topic }) {
     >
       <div className={styles.promptHeader}>
         <div className={styles.promptTitleGroup}>
-          <span className={styles.promptIcon}>🤖</span>
-          <div>
-            <h2 className={styles.promptTitle}>Prompt for your LLM</h2>
-            <p className={styles.promptSubtitle}>
-              Paste this into <strong>any LLM</strong> (ChatGPT, Gemini, Claude, and more) to rewrite your full page based on these audit findings.
-            </p>
-          </div>
+          <h2 className={styles.promptTitle}>Prompt for your LLM</h2>
+          <p className={styles.promptSubtitle}>
+            Paste this into <strong>any LLM</strong> (ChatGPT, Gemini, Claude, and more) to rewrite your full page based on these audit findings.
+          </p>
         </div>
         <button
           className={`${styles.copyBtn} ${copied ? styles.copyBtnDone : ''}`}
@@ -248,32 +366,12 @@ export default function RewriteTab({ rewrites, geoAudit, url, topic }) {
 
   return (
     <div className={styles.page}>
-      {/* Contextual explanation */}
-      <div className={styles.explainer}>
-        <div className={styles.explainerRow}>
-          <div className={styles.explainerItem}>
-            <span className={styles.explainerIcon}>✍️</span>
-            <div>
-              <strong className={styles.explainerTitle}>Before / After rewrites</strong>
-              <p className={styles.explainerDesc}>AI-generated rewrites for the specific sections hurting your GEO score. Each one targets a weakness from the audit and shows exactly what optimized content looks like.</p>
-            </div>
-          </div>
-          <div className={styles.explainerItem}>
-            <span className={styles.explainerIcon}>🤖</span>
-            <div>
-              <strong className={styles.explainerTitle}>Full-page rewrite prompt</strong>
-              <p className={styles.explainerDesc}>At the bottom: a ready-to-use prompt you can paste into <strong>any LLM</strong> (ChatGPT, Gemini, Claude, and more) to rewrite your entire page in one shot.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main rewrites */}
       {items.length > 0 ? (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Before / After Rewrites</h2>
           <p className={styles.sectionHint}>
-            Each section targets a specific GEO weakness. Click to expand or collapse.
+            Each section targets a specific GEO weakness. Click ▲/▼ to collapse individual rewrites.
           </p>
           <div className={styles.items}>
             {items.map((r, i) => (
@@ -285,7 +383,7 @@ export default function RewriteTab({ rewrites, geoAudit, url, topic }) {
         <div className={styles.empty}>No rewrites generated.</div>
       )}
 
-      {/* Quick wins */}
+      {/* Quick wins — all shown, examples expandable */}
       {additional_quick_wins.length > 0 && (
         <motion.div
           className={styles.section}

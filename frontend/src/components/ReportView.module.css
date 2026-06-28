@@ -17,6 +17,12 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reportHeader:hover {
+  border-color: var(--border-bright);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
 }
 
 .reportMeta {
@@ -36,6 +42,12 @@
   border: 1px solid var(--border-mid);
   padding: 4px 12px;
   border-radius: 20px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.reportBadge:hover {
+  background: var(--accent-glow);
+  border-color: var(--accent);
 }
 
 .reportDate {
@@ -64,6 +76,7 @@
   font-family: 'JetBrains Mono', monospace;
   opacity: 0.8;
   word-break: break-all;
+  transition: opacity 0.15s ease;
 }
 
 .pageUrl:hover { opacity: 1; text-decoration: underline; }
@@ -82,6 +95,12 @@
   border: 1px solid var(--border);
   padding: 3px 10px;
   border-radius: 12px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.metaChip:hover {
+  border-color: var(--border-mid);
+  color: var(--text-primary);
 }
 
 .metaChipGreen {
@@ -91,6 +110,11 @@
   border: 1px solid rgba(0, 229, 153, 0.2);
   padding: 3px 10px;
   border-radius: 12px;
+  transition: background 0.15s ease;
+}
+
+.metaChipGreen:hover {
+  background: rgba(0, 229, 153, 0.14);
 }
 
 .resetBtn {
@@ -103,13 +127,14 @@
   padding: 6px 14px;
   cursor: pointer;
   font-family: inherit;
-  transition: var(--transition);
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   margin-top: 4px;
 }
 
 .resetBtn:hover {
   color: var(--text-primary);
   border-color: var(--border-mid);
+  transform: translateX(-2px);
 }
 
 /* ── Section ─────────────────────────────────────────────────────────────── */
@@ -119,6 +144,11 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   margin-bottom: 20px;
+  transition: border-color 0.2s ease;
+}
+
+.section:hover {
+  border-color: var(--border-mid);
 }
 
 .sectionHeader {
@@ -137,6 +167,11 @@
 .sectionIcon {
   font-size: 1rem;
   color: var(--accent);
+  transition: transform 0.2s ease;
+}
+
+.section:hover .sectionIcon {
+  transform: scale(1.15);
 }
 
 .sectionTitle {
@@ -164,6 +199,11 @@
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   padding: 18px 20px;
   margin-bottom: 16px;
+  transition: background 0.15s ease, border-left-color 0.15s ease;
+}
+
+.execSummary:hover {
+  background: var(--accent-dim);
 }
 
 .execSummary p {
@@ -204,13 +244,20 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  padding: 18px 0;
+  padding: 18px 10px;
+  margin: 0 -10px;
   border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
 }
 
 .actionItem:last-child {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+.actionItem:hover {
+  background: var(--bg-surface);
 }
 
 .actionPriority {
@@ -223,6 +270,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.actionItem:hover .actionPriority {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  transform: scale(1.08);
 }
 
 .priorityNum {
@@ -270,6 +324,11 @@
   border: 1px solid rgba(0, 212, 255, 0.2);
   padding: 2px 8px;
   border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.actionCriterion:hover {
+  background: var(--accent-glow);
 }
 
 .effortBadge {
@@ -286,6 +345,11 @@
   border: 1px solid var(--border);
   padding: 2px 8px;
   border-radius: 10px;
+  transition: border-color 0.15s ease;
+}
+
+.timelineBadge:hover {
+  border-color: var(--border-mid);
 }
 
 .actionImpact {
@@ -302,33 +366,92 @@
 
 /* ── Competitors ─────────────────────────────────────────────────────────── */
 .competitorGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 14px;
   margin-bottom: 20px;
 }
 
+/* ── Gap Wrapper + Bridge ────────────────────────────────────────────────── */
+.gapWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.gapBridge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 0 2px;
+}
+
+.gapBridgeLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.gapBridgeLabel {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+/* ── Gap Box ─────────────────────────────────────────────────────────────── */
 .gapBox {
   background: var(--bg-surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-mid);
+  border-top: 2px solid var(--accent);
   border-radius: var(--radius-md);
-  padding: 18px 20px;
+  padding: 20px 22px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gapBox:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.gapHeader {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.gapTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.gapIcon {
+  font-size: 0.95rem;
+  color: var(--accent);
 }
 
 .gapTitle {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.gapSubtitle {
+  font-size: 0.8rem;
   color: var(--text-secondary);
-  margin-bottom: 12px;
+  line-height: 1.55;
+  padding-left: 23px;
 }
 
 .gapList {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .gapItem {
@@ -338,12 +461,27 @@
   font-size: 0.85rem;
   color: var(--text-primary);
   line-height: 1.5;
+  padding: 7px 8px;
+  margin: 0 -8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.gapItem:hover {
+  background: var(--accent-dim);
+  color: var(--text-bright);
+}
+
+.gapItem:hover .gapBullet {
+  color: var(--accent);
+  transform: translateX(2px);
 }
 
 .gapBullet {
-  color: var(--accent);
+  color: var(--text-dim);
   flex-shrink: 0;
   margin-top: 1px;
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
 .emptyState {
@@ -370,13 +508,14 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: var(--transition);
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .resetBtnLarge:hover {
   border-color: var(--accent);
   color: var(--accent);
   box-shadow: 0 0 12px var(--accent-dim);
+  transform: translateY(-1px);
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
@@ -384,5 +523,6 @@
   .sectionHeader { padding: 20px 20px 0; }
   .sectionBody   { padding: 20px 20px 24px; }
   .reportHeader  { padding: 24px 20px; }
-  .competitorGrid { grid-template-columns: 1fr; }
+  .actionItem    { margin: 0; padding: 16px 0; }
+  .gapItem       { margin: 0; padding: 6px 0; }
 }

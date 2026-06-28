@@ -1,32 +1,63 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './CompetitorTab.module.css';
+import { renderMarkdownBold } from '../../utils/renderMarkdownBold';
 
 const sc = s => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
-function parseBold(text) {
-  return text.split(/\*\*(.+?)\*\*/).map((part, i) =>
-    i % 2 === 1 ? <strong key={i}>{part}</strong> : part
-  );
-}
-
-function WhyCited({ value }) {
-  const bullets = Array.isArray(value)
-    ? value
-    : (value || '').split(/(?<=[.!?])\s+(?=[A-Z])/).map(s => s.trim()).filter(Boolean);
-  if (!bullets.length) return null;
+function EmptyCompetitors() {
   return (
-    <ul className={styles.whyCitedList}>
-      {bullets.map((b, i) => <li key={i}>{parseBold(b)}</li>)}
-    </ul>
+    <div className={styles.emptyState}>
+      <svg className={styles.emptyIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.35-4.35" />
+      </svg>
+      <h3 className={styles.emptyHeading}>No competitor data available</h3>
+      <p className={styles.emptySubtext}>The competitor search couldn't retrieve results for this topic. This may be due to API limits or an unusual topic keyword.</p>
+    </div>
   );
 }
 
-function StrengthTag({ text }) {
-  return <span className={styles.strengthTag}>{sc(text)}</span>;
+function sanitizeMarkdown(text) {
+  if (!text) return text;
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/_(.+?)_/g, '$1');
+}
+
+function Chevron({ open }) {
+  return (
+    <svg
+      className={`${styles.chevronIcon} ${open ? styles.chevronOpen : ''}`}
+      width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+    >
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  );
+}
+
+function StrengthItem({ text }) {
+  return (
+    <div className={styles.strengthItem}>
+      <svg className={styles.strengthCheck} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      <span className={styles.strengthText}>{renderMarkdownBold(sc(text))}</span>
+    </div>
+  );
 }
 
 function CompetitorRow({ competitor, index }) {
   const { url, domain, title, geo_strengths = [], why_ai_cites_it, key_differentiator } = competitor;
+
+  const bullets = why_ai_cites_it
+    ? (Array.isArray(why_ai_cites_it)
+        ? why_ai_cites_it
+        : (why_ai_cites_it || '').split(/(?<=[.!?])\s+(?=[A-Z])/).map(s => s.trim()).filter(Boolean))
+    : [];
 
   return (
     <motion.tr
@@ -57,28 +88,83 @@ function CompetitorRow({ competitor, index }) {
 
       <td className={styles.tdSignal}>
         {key_differentiator && (
-          <span className={styles.signalBadge}>{key_differentiator}</span>
+          <span className={styles.signalBadge}>{sanitizeMarkdown(key_differentiator)}</span>
         )}
-        {why_ai_cites_it && <WhyCited value={why_ai_cites_it} />}
+        {bullets.length > 0 && (
+          <div className={styles.whyCitedWrap}>
+            <p className={styles.whyCitedLabel}>Why AI cites this</p>
+            <ul className={styles.whyCitedList}>
+              {bullets.map((b, i) => <li key={i}>{sanitizeMarkdown(b)}</li>)}
+            </ul>
+          </div>
+        )}
       </td>
 
       <td className={styles.tdStrengths}>
-        <div className={styles.tagsWrap}>
-          {geo_strengths.slice(0, 4).map((s, i) => (
-            <StrengthTag key={i} text={s} />
+        <div className={styles.strengthsList}>
+          {geo_strengths.map((s, i) => (
+            <StrengthItem key={i} text={s} />
           ))}
-          {geo_strengths.length > 4 && (
-            <span className={styles.moreTag}>+{geo_strengths.length - 4} more</span>
-          )}
         </div>
       </td>
     </motion.tr>
   );
 }
 
+const GAP_ACCENT_COLORS = ['#6366f1', '#f97316', '#22c55e', '#3b82f6', '#a855f7'];
+
+function GapCard({ gap, index }) {
+  const [expanded, setExpanded] = useState(false);
+  const color = GAP_ACCENT_COLORS[index % GAP_ACCENT_COLORS.length];
+
+  // Split into a short title (first sentence or first ~80 chars) and body
+  const periodIdx = gap.search(/[.!?]/);
+  const hasMore = periodIdx > 0 && periodIdx < gap.length - 2;
+  const title = hasMore ? gap.slice(0, periodIdx + 1) : gap;
+  const detail = hasMore ? gap.slice(periodIdx + 1).trim() : null;
+
+  return (
+    <motion.div
+      className={`${styles.gapCard} ${expanded ? styles.gapCardExpanded : ''}`}
+      style={{ borderLeftColor: color }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.07 }}
+      onClick={detail ? () => setExpanded(e => !e) : undefined}
+      role={detail ? 'button' : undefined}
+      tabIndex={detail ? 0 : undefined}
+      onKeyDown={detail ? (e) => e.key === 'Enter' && setExpanded(x => !x) : undefined}
+    >
+      <div className={styles.gapCardHeader}>
+        <span className={styles.gapCardNum} style={{ color }}>{index + 1}</span>
+        <span className={styles.gapCardTitle}>{renderMarkdownBold(title)}</span>
+        {detail && (
+          <span className={styles.gapCardToggle} style={{ color }}>
+            <Chevron open={expanded} />
+          </span>
+        )}
+      </div>
+      <AnimatePresence initial={false}>
+        {expanded && detail && (
+          <motion.p
+            className={styles.gapCardDetail}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            {detail}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 export default function CompetitorTab({ competitorData }) {
   if (!competitorData) {
-    return <div className={styles.empty}>Competitor data not available.</div>;
+    return <EmptyCompetitors />;
   }
 
   const {
@@ -90,33 +176,6 @@ export default function CompetitorTab({ competitorData }) {
 
   return (
     <div className={styles.page}>
-      {/* Contextual explanation */}
-      <div className={styles.explainer}>
-        <div className={styles.explainerRow}>
-          <div className={styles.explainerItem}>
-            <span className={styles.explainerIcon}>🎯</span>
-            <div>
-              <strong className={styles.explainerTitle}>Why these pages rank</strong>
-              <p className={styles.explainerDesc}>These are the pages AI currently prefers to cite on your topic. What they do well reveals exactly what your content is missing.</p>
-            </div>
-          </div>
-          <div className={styles.explainerItem}>
-            <span className={styles.explainerIcon}>📊</span>
-            <div>
-              <strong className={styles.explainerTitle}>GEO Strengths column</strong>
-              <p className={styles.explainerDesc}>The specific signals (authority, structure, quotability) that make each competitor attractive to AI. Use these as your checklist.</p>
-            </div>
-          </div>
-          <div className={styles.explainerItem}>
-            <span className={styles.explainerIcon}>💡</span>
-            <div>
-              <strong className={styles.explainerTitle}>Gap opportunities below</strong>
-              <p className={styles.explainerDesc}>Angles and formats none of these competitors cover yet. Your best shot at a GEO advantage no one else has.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Landscape summary */}
       {landscape_summary && (
         <motion.div
@@ -132,7 +191,7 @@ export default function CompetitorTab({ competitorData }) {
             <div className={styles.contentTypes}>
               <span className={styles.ctLabel}>Dominant formats:</span>
               {dominant_content_types.map((t, i) => (
-                <span key={i} className={styles.ctTag}>{sc(t)}</span>
+                <span key={i} className={styles.ctTagBlue}>{sc(t)}</span>
               ))}
             </div>
           )}
@@ -167,7 +226,21 @@ export default function CompetitorTab({ competitorData }) {
           </div>
         </motion.div>
       ) : (
-        <div className={styles.empty}>No competitor data found for this topic.</div>
+        <EmptyCompetitors />
+      )}
+
+      {/* Arrow connector — visual bridge between competitors and gaps */}
+      {gap_opportunities.length > 0 && (
+        <div className={styles.gapConnector}>
+          <div className={styles.gapConnectorLine} />
+          <div className={styles.gapConnectorBadge}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+            </svg>
+            Gaps identified from the analysis above
+          </div>
+          <div className={styles.gapConnectorLine} />
+        </div>
       )}
 
       {/* Gap opportunities */}
@@ -180,14 +253,14 @@ export default function CompetitorTab({ competitorData }) {
         >
           <h2 className={styles.sectionTitle}>Your Content Gap Opportunities</h2>
           <p className={styles.sectionHint}>
-            These are <strong>angles and formats that competitors are not covering</strong>. Adding them to your page can give you a GEO advantage no one else has.
+            These are <strong>angles and formats that competitors are not covering</strong>. Adding them gives you a GEO advantage no one else has.
+            {gap_opportunities.some((g) => g.search(/[.!?]/) > 0 && g.search(/[.!?]/) < g.length - 2) && (
+              <> Click any card to expand details.</>
+            )}
           </p>
-          <div className={styles.gaps}>
+          <div className={styles.gapCards}>
             {gap_opportunities.map((gap, i) => (
-              <div key={i} className={styles.gapItem}>
-                <span className={styles.gapNum}>{i + 1}</span>
-                <span className={styles.gapText}>{gap}</span>
-              </div>
+              <GapCard key={i} gap={gap} index={i} />
             ))}
           </div>
         </motion.div>

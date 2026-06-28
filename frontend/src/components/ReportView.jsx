@@ -81,16 +81,31 @@ export default function ReportView({ results, onReset }) {
             </div>
 
             {competitorData.gap_opportunities && competitorData.gap_opportunities.length > 0 && (
-              <div className={styles.gapBox}>
-                <div className={styles.gapTitle}>Content gap opportunities</div>
-                <ul className={styles.gapList}>
-                  {competitorData.gap_opportunities.map((gap, i) => (
-                    <li key={i} className={styles.gapItem}>
-                      <span className={styles.gapBullet}>→</span>
-                      {gap}
-                    </li>
-                  ))}
-                </ul>
+              <div className={styles.gapWrapper}>
+                <div className={styles.gapBridge}>
+                  <div className={styles.gapBridgeLine} />
+                  <span className={styles.gapBridgeLabel}>from this analysis</span>
+                  <div className={styles.gapBridgeLine} />
+                </div>
+                <div className={styles.gapBox}>
+                  <div className={styles.gapHeader}>
+                    <div className={styles.gapTitleRow}>
+                      <span className={styles.gapIcon}>◐</span>
+                      <span className={styles.gapTitle}>Content gap opportunities</span>
+                    </div>
+                    <p className={styles.gapSubtitle}>
+                      Topics the AI-cited sources above cover that your page doesn't yet — your clearest path to competing for citations.
+                    </p>
+                  </div>
+                  <ul className={styles.gapList}>
+                    {competitorData.gap_opportunities.map((gap, i) => (
+                      <li key={i} className={styles.gapItem}>
+                        <span className={styles.gapBullet}>→</span>
+                        <span>{gap}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             )}
           </>

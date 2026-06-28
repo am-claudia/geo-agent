@@ -1,68 +1,144 @@
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
 /* ─── Page ─── */
 .page {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 28px;
 }
 
 .empty {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 15px;
   text-align: center;
   padding: 60px 0;
 }
 
-/* ─── Explainer block ─── */
-.explainer {
-  background: var(--accent-dim);
-  border: 1px solid var(--border-mid);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: all var(--transition);
+/* ─── Expand toggle ─── */
+.chevronIcon {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
 }
 
-.explainerText {
-  font-size: 0.88rem;
-  color: var(--text-primary);
-  line-height: 1.65;
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.showMoreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.showMoreBtn:hover {
+  color: var(--accent-text);
+}
+
+/* ─── Criteria explainer section ─── */
+.criteriaExplainerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.criteriaExplainerHeading {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
   transition: color var(--transition);
 }
 
-.explainerText strong {
-  color: var(--text-bright);
-  font-weight: 700;
+.criteriaExplainerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
-.criteriaList {
-  list-style: none;
+.criteriaExplainerCard {
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding-left: 4px;
+  transition: box-shadow 0.15s ease;
 }
 
-.criteriaListItem {
-  font-size: 0.82rem;
+.criteriaExplainerCard:hover {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.1);
+}
+
+:root[data-theme="dark"] .criteriaExplainerCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.criteriaExplainerCardIcon {
+  font-size: 18px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.criteriaExplainerCardName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e1b4b;
+  line-height: 1.3;
+  transition: color var(--transition);
+}
+
+:root[data-theme="dark"] .criteriaExplainerCardName {
+  color: #f0f0ff;
+}
+
+.criteriaExplainerCardDesc {
+  font-size: 11px;
   color: var(--text-secondary);
   line-height: 1.5;
   transition: color var(--transition);
 }
 
-.criteriaListItem strong {
-  color: var(--text-primary);
-  font-weight: 700;
+/* ─── Score card — frosted glass ─── */
+.scoreCard {
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.08);
+  transition: box-shadow 0.2s ease;
+}
+
+:root[data-theme="dark"] .scoreCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* ─── Top row: gauge + summary ─── */
 .topRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 48px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  align-items: start;
 }
 
 /* ─── Gauge ─── */
@@ -87,35 +163,39 @@
   gap: 2px;
 }
 
+/* Score number — color matches gauge ring */
 .gaugeScore {
-  font-size: 2.8rem;
-  font-weight: 800;
+  font-size: 48px;
+  font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  display: inline-block;
+  transition: color 0.5s ease;
 }
 
 .gaugeMax {
-  font-size: 0.9rem;
+  font-size: 20px;
   color: var(--text-secondary);
   margin-top: -4px;
+  transition: color var(--transition);
 }
 
 .gaugeLabel {
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-top: 2px;
+  margin-top: 4px;
+  color: var(--text-secondary);
 }
 
 /* ─── Summary ─── */
 .summary {
-  flex: 1;
-  min-width: 240px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-left: 32px;
 }
 
 .summarySection {
@@ -124,50 +204,58 @@
   gap: 10px;
 }
 
-.sectionTitle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  font-weight: 700;
+.strengthsLabel {
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
+  color: #6366f1;
 }
 
-.sectionDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
+:root[data-theme="dark"] .strengthsLabel {
+  color: #818cf8;
+}
+
+.weaknessesLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--danger);
 }
 
 .list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .listItem {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 0.88rem;
+  font-size: 14px;
   color: var(--text-primary);
   line-height: 1.5;
   transition: color var(--transition);
 }
 
 .listCheck {
-  color: var(--score-great);
+  color: #6366f1;
+  font-size: 13px;
   font-weight: 700;
   flex-shrink: 0;
   margin-top: 1px;
 }
 
+:root[data-theme="dark"] .listCheck {
+  color: #818cf8;
+}
+
 .listX {
-  color: var(--score-poor);
+  color: var(--danger);
+  font-size: 13px;
   font-weight: 700;
   flex-shrink: 0;
   margin-top: 1px;
@@ -177,126 +265,181 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .heading {
-  font-size: 1rem;
+  font-size: 18px;
   font-weight: 700;
-  color: var(--text-bright);
-  letter-spacing: -0.01em;
+  color: #1e1b4b;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
   transition: color var(--transition), border-color var(--transition);
 }
 
-.criteriaGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+:root[data-theme="dark"] .heading {
+  color: #f0f0ff;
+  border-bottom-color: rgba(129, 140, 248, 0.2);
 }
 
-/* ─── Criterion bar ─── */
-.criterion {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.criterionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.criterionLabel {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-primary);
+.sectionHint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: -6px;
   transition: color var(--transition);
 }
 
-.criterionScore {
-  font-size: 0.88rem;
+/* ─── Criteria card grid ─── */
+.criteriaCardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.criterionCard {
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+}
+
+.criterionCard:hover {
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.12);
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+.criterionCardExpanded {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+:root[data-theme="dark"] .criterionCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .criterionCard:hover {
+  border-color: rgba(129, 140, 248, 0.3);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+.criterionCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.criterionCardLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  transition: color var(--transition);
+}
+
+.criterionCardBadge {
+  font-size: 11px;
   font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+  flex-shrink: 0;
   font-variant-numeric: tabular-nums;
 }
 
-.barTrack {
-  height: 7px;
-  background: var(--border);
-  border-radius: 4px;
+.criterionCardBarTrack {
+  height: 4px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 2px;
   overflow: hidden;
   transition: background var(--transition);
 }
 
-.barFill {
+.criterionCardBarFill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-.criterionExplanation {
-  font-size: 0.8rem;
+.criterionCardSummary {
+  font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.55;
+  line-height: 1.5;
   transition: color var(--transition);
 }
 
-/* ─── Citation Likelihood ─── */
+.criterionCardFull {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding-top: 8px;
+  border-top: 1px solid rgba(99, 102, 241, 0.1);
+  transition: color var(--transition), border-color var(--transition);
+}
+
+/* ─── Citation likelihood ─── */
 .gaugeColumn {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 14px;
-  flex-shrink: 0;
-}
-
-.citationWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  max-width: 220px;
-}
-
-.citationRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.citationLabel {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  white-space: nowrap;
+  padding-right: 32px;
+  border-right: 1px solid rgba(99, 102, 241, 0.12);
+  transition: border-color var(--transition);
 }
 
 .citationBadge {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #fff;
-  padding: 2px 10px;
-  border-radius: 999px;
-  line-height: 1.7;
-  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-align: center;
+  min-width: 160px;
+  transition: background var(--transition), border-color var(--transition);
 }
 
-.citationNote {
-  font-size: 0.74rem;
+:root[data-theme="dark"] .citationBadge {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.citationLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--text-secondary);
-  text-align: center;
-  line-height: 1.45;
-  margin: 0;
-  opacity: 0.75;
+  transition: color var(--transition);
+}
+
+.citationValue {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: color 0.3s ease;
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 600px) {
-  .topRow { gap: 28px; justify-content: center; }
-  .summary { min-width: 100%; }
+@media (max-width: 700px) {
+  .scoreCard { padding: 20px; }
+  .topRow { grid-template-columns: 1fr; }
+  .gaugeColumn { border-right: none; border-bottom: 1px solid rgba(99, 102, 241, 0.12); padding-right: 0; padding-bottom: 24px; }
+  .summary { padding-left: 0; padding-top: 24px; }
+  .criteriaExplainerGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .criteriaCardGrid { grid-template-columns: 1fr; }
 }

@@ -3,38 +3,39 @@
   position: relative;
 }
 
-/* ─── Trigger button ─── */
+/* ─── Trigger button: ghost style ─── */
 .trigger {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-mid);
-  background: var(--accent-dim);
-  color: var(--accent-text);
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
   white-space: nowrap;
 }
 
 .trigger:hover:not(:disabled) {
-  border-color: var(--accent);
-  background: rgba(0, 212, 255, 0.18);
-  box-shadow: var(--shadow-glow);
+  background: var(--bg-card-hover);
+  border-color: var(--border-mid);
 }
 
 .trigger:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: wait;
 }
 
 .chevron {
   transition: transform 0.2s ease;
-  opacity: 0.7;
+  opacity: 0.6;
+  color: var(--text-secondary);
 }
 
 .chevronOpen {
@@ -42,10 +43,10 @@
 }
 
 .spinner {
-  width: 13px;
-  height: 13px;
-  border: 2px solid var(--border-mid);
-  border-top-color: var(--accent);
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--border-mid);
+  border-top-color: var(--text-secondary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   flex-shrink: 0;
@@ -56,16 +57,14 @@
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  min-width: 200px;
+  min-width: 196px;
   background: var(--bg-card-solid);
-  border: 1px solid var(--border-mid);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card), 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   z-index: 300;
-  animation: scaleFadeIn 0.18s ease;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  animation: scaleFadeIn 0.15s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* ─── Option ─── */
@@ -73,14 +72,14 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 11px 14px;
   background: transparent;
   border: none;
   cursor: pointer;
   text-align: left;
   color: var(--text-primary);
-  transition: background 0.15s ease;
+  transition: background 0.12s ease;
   border-bottom: 1px solid var(--border);
 }
 
@@ -88,13 +87,11 @@
 
 .option:hover {
   background: var(--bg-card-hover);
-  color: var(--accent-text);
 }
 
 .option svg {
   flex-shrink: 0;
-  color: currentColor;
-  opacity: 0.8;
+  color: var(--text-secondary);
 }
 
 .optionText {
@@ -104,13 +101,14 @@
 }
 
 .optionLabel {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   font-family: var(--font-sans);
+  color: var(--text-primary);
 }
 
 .optionDesc {
-  font-size: 0.73rem;
-  opacity: 0.65;
+  font-size: 12px;
+  color: var(--text-secondary);
   font-family: var(--font-sans);
 }

@@ -1,4 +1,4 @@
-import Groq from 'groq-sdk';
+import { groqComplete } from './groqWithFallback.js';
 
 // Agent 4 — Rewrite Suggester
 // Takes the top 3 GEO weaknesses and produces concrete before/after rewrites
@@ -12,12 +12,11 @@ Rewriting rules:
 - Be surgical: rewrite the specific weak sentence or paragraph, not a generic version
 - Each rewrite must directly address the stated GEO weakness
 - Explain WHY the rewrite improves citability in concrete LLM-behavior terms
-- If a weakness CANNOT be addressed without inventing new facts, do NOT fabricate. Set the "after" field to a note starting with "NOTE:" that explains what type of content the user would need to add themselves — e.g., "NOTE: To fix this criterion, add a named expert quote with credentials. The page currently contains no named attribution to restructure. Format: '[Expert Name], [Title] at [Organization], states: ...'"
+- If a weakness cannot be fixed using only existing facts, you MUST still provide a realistic "after" example that shows the structure and format of what improved content would look like. Use bracketed placeholders such as [Expert Name], [Title], [Organization], [Statistic], [Year], [Source] for missing information — never write "NOTE:" in the "after" field. The AFTER must always be a real content transformation that demonstrates the improvement, even if some specific values are placeholders. This shows the user exactly what to add and how to format it.
 
 Respond only with valid JSON. No markdown code fences.`;
 
 export async function suggestRewrites(parsedContent, topWeaknesses) {
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   const prompt = `Here is a web page's content and the 3 most critical GEO weaknesses identified in its audit. For each weakness, find a relevant excerpt from the original content and rewrite it to directly fix the GEO problem.
 
@@ -51,7 +50,7 @@ Return ONLY this JSON:
       "weakness_score": <original score>,
       "context": "<which section or part of the page this excerpt is from>",
       "before": "<original excerpt or paraphrase — the weak version>",
-      "after": "<rewritten version using ONLY facts already present on the page — if the weakness cannot be fixed without inventing new facts, begin this field with 'NOTE:' and explain what the user would need to add themselves>",
+      "after": "<rewritten version — always a real content example. If missing facts are needed, use [Bracketed Placeholders] for the missing pieces so the user sees exactly what to add and how to format it. NEVER start this field with 'NOTE:'>",
       "why_better": "<specific explanation: how does this rewrite make an LLM more likely to cite this content?>",
       "geo_signals_added": [
         "<e.g., 'Added named expert with credentials'>",
@@ -82,9 +81,8 @@ Return ONLY this JSON:
   ]
 }`;
 
-  const completion = await groq.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    temperature: 0.5,
+  const completion = await groqComplete({
+    temperature: 0,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

@@ -13,6 +13,13 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rewriteItem:hover {
+  border-color: var(--border-mid);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
 }
 
 .rewriteHeader {
@@ -105,6 +112,7 @@
   padding: 14px 16px;
   font-style: normal;
   border-left: 3px solid;
+  transition: background 0.15s ease;
 }
 
 .panelTextBefore {
@@ -113,10 +121,18 @@
   color: var(--text-secondary);
 }
 
+.panelTextBefore:hover {
+  background: rgba(255, 68, 102, 0.1);
+}
+
 .panelTextAfter {
   background: rgba(0, 229, 153, 0.06);
   border-color: rgba(0, 229, 153, 0.3);
   color: var(--text-primary);
+}
+
+.panelTextAfter:hover {
+  background: rgba(0, 229, 153, 0.1);
 }
 
 /* ── Why Better ──────────────────────────────────────────────────────────── */
@@ -194,12 +210,19 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding-bottom: 14px;
+  padding: 10px 8px 14px;
+  margin: 0 -8px;
   border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+}
+
+.quickWin:hover {
+  background: var(--bg-card);
 }
 
 .quickWin:last-child {
-  padding-bottom: 0;
+  padding-bottom: 10px;
   border-bottom: none;
 }
 
