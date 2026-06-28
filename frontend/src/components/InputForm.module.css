@@ -34,8 +34,8 @@
 
 /* ─── Full-page layout ─── */
 .page {
-  height: calc(100dvh - 60px); /* 60px = navbar height */
-  overflow: hidden;
+  min-height: calc(100dvh - 60px); /* 60px = navbar height */
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
