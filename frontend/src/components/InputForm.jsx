@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import styles from './InputForm.module.css';
 
@@ -31,19 +31,6 @@ export default function InputForm({ onSubmit }) {
   const [topic, setTopic] = useState('');
   const [urlError, setUrlError] = useState('');
   const [loading, setLoading]   = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100,
-      });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const err = validateUrl(url.trim());
@@ -58,7 +45,7 @@ export default function InputForm({ onSubmit }) {
   const canSubmit = url.trim() && topic.trim() && !loading;
 
   return (
-    <div className={styles.page} style={{ background: `radial-gradient(ellipse 100px 80px at ${mousePos.x}% ${mousePos.y}%, rgba(99, 102, 241, 0.22) 0%, rgba(139, 92, 246, 0.08) 55%, transparent 80%), var(--bg-base)` }}>
+    <div className={styles.page}>
       <div className={`${styles.orb} ${styles.orbBlue}`} />
       <div className={`${styles.orb} ${styles.orbPurple}`} />
       <div className={styles.container}>
