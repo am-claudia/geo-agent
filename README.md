@@ -4,6 +4,14 @@
 **Project Type:** Option 2 -- Hands-On Applied Project  
 **Topic:** Generative Engine Optimization (GEO) -- Automating AI Citability Audits with Multi-Agent AI
 
+## Live Demo
+
+**Deployed app:** [https://geo-agent-xi.vercel.app/](https://geo-agent-xi.vercel.app/)
+
+The app is fully functional — paste any public URL and a topic keyword, and the five-agent pipeline runs in real time. No setup required.
+
+> **Note:** The backend is hosted on Render's free tier, which spins down after inactivity. The first request after a cold start may take 30–60 seconds to respond while the server wakes up. Subsequent requests are fast.
+
 ---
 
 ## Overview
@@ -339,7 +347,9 @@ The response will show `"groq": true` and `"serper": true` if both keys are load
 
 ## How to Use
 
-1. Open [http://localhost:5173](http://localhost:5173)
+You can use the [live app](https://geo-agent-xi.vercel.app/) directly or run it locally (see Installation above).
+
+1. Open the app (live or local)
 2. Enter a URL (any publicly accessible web page) and a topic keyword describing the main subject of the page
 3. Click "Analyze" and watch the agent pipeline run in real time -- Agents 1 and 3 activate simultaneously, then 2, 4, and 5 in sequence
 4. When the pipeline completes, the full audit report loads below the agent tracker
