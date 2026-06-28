@@ -105,7 +105,7 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 GEO Agent Backend running on http://localhost:${PORT}`);
-  console.log(`   Health check: http://localhost:${PORT}/api/health\n`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 GEO Agent Backend running on http://0.0.0.0:${PORT}`);
+  console.log(`   Health check: http://0.0.0.0:${PORT}/api/health\n`);
 });
