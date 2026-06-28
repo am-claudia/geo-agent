@@ -36,7 +36,7 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     timestamp: new Date().toISOString(),
     env: {
-      gemini: !!process.env.GEMINI_API_KEY,
+      groq: !!process.env.GROQ_API_KEY,
       serper: !!process.env.SERPER_API_KEY,
     },
   });
