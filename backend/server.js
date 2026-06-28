@@ -22,19 +22,7 @@ function cacheGet(key) {
   return entry.data;
 }
 
-const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
-if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST'],
-}));
+app.use(cors());
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
