@@ -99,8 +99,8 @@ export default function ResultsTabs({ results, url, topic, geoScore, onNewAnalys
             >
               {activeTab === 'summary'     && <SummaryTab     geoAudit={geoAudit} finalReport={finalReport} competitorData={competitorData} parsedContent={parsedContent} />}
               {activeTab === 'score'       && <ScoreTab       geoAudit={geoAudit} />}
-              {activeTab === 'content'     && <ContentTab     parsedContent={parsedContent} />}
-              {activeTab === 'competitors' && <CompetitorTab  competitorData={competitorData} />}
+              {activeTab === 'content'     && <ContentTab     results={results} />}
+              {activeTab === 'competitors' && <CompetitorTab results={results} />}
               {activeTab === 'rewrites'    && <RewriteTab     rewrites={rewrites} geoAudit={geoAudit} url={url} topic={topic} />}
               {activeTab === 'action'      && <ActionPlanTab  finalReport={finalReport} />}
             </motion.div>

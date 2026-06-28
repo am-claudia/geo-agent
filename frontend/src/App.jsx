@@ -162,7 +162,7 @@ function AppContent() {
 
     // ── SSE stream ────────────────────────────────────────────────────────────
     try {
-      const response = await fetch('/api/analyze', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL ?? ''}/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, topic }),

@@ -1,9 +1,5 @@
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50%       { background-position: 100% 50%; }
-}
+/* ─── Page ─────────────────────────────────────────────────────────────────── */
 
-/* ─── Page ─── */
 .page {
   display: flex;
   flex-direction: column;
@@ -17,140 +13,59 @@
   padding: 60px 0;
 }
 
-/* ─── Expand toggle ─── */
-.chevronIcon {
-  flex-shrink: 0;
-  transition: transform 200ms ease;
-}
+/* ─── Section 1: Hero Card ───────────────────────────────────────────────────── */
 
-.chevronOpen {
-  transform: rotate(180deg);
-}
-
-.showMoreBtn {
-  display: inline-flex;
+.heroCard {
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  padding: 0;
-  font-weight: 500;
-  transition: color 0.15s ease;
-}
-
-.showMoreBtn:hover {
-  color: var(--accent-text);
-}
-
-/* ─── Criteria explainer section ─── */
-.criteriaExplainerSection {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.criteriaExplainerHeading {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  transition: color var(--transition);
-}
-
-.criteriaExplainerGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-.criteriaExplainerCard {
-  background: rgba(255, 255, 255, 0.7);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 16px;
-  padding: 14px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  transition: box-shadow 0.15s ease;
-}
-
-.criteriaExplainerCard:hover {
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.1);
-}
-
-:root[data-theme="dark"] .criteriaExplainerCard {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.criteriaExplainerCardIcon {
-  font-size: 18px;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-
-.criteriaExplainerCardName {
-  font-size: 12px;
-  font-weight: 600;
-  color: #1e1b4b;
-  line-height: 1.3;
-  transition: color var(--transition);
-}
-
-:root[data-theme="dark"] .criteriaExplainerCardName {
-  color: #f0f0ff;
-}
-
-.criteriaExplainerCardDesc {
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  transition: color var(--transition);
-}
-
-/* ─── Score card — frosted glass ─── */
-.scoreCard {
-  background: rgba(255, 255, 255, 0.7);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  gap: 0;
+  background: var(--color-surface, var(--bg-card));
+  border: 1px solid var(--color-border, var(--border));
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.08);
-  transition: box-shadow 0.2s ease;
 }
 
-:root[data-theme="dark"] .scoreCard {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-/* ─── Top row: gauge + summary ─── */
-.topRow {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 0;
-  align-items: start;
-}
-
-/* ─── Gauge ─── */
-.gaugeWrap {
-  position: relative;
+.heroDivider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--color-border, var(--border));
+  margin: 0 36px;
   flex-shrink: 0;
+}
+
+.heroLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  min-width: 200px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.heroRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  align-self: stretch;
+  justify-content: center;
+}
+
+/* ─── Gauge ──────────────────────────────────────────────────────────────────── */
+
+.gaugeWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.gaugeSvgWrap {
+  position: relative;
   width: 200px;
   height: 200px;
-}
-
-.gaugeSvg {
-  display: block;
 }
 
 .gaugeCenter {
@@ -160,286 +75,661 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 1px;
+  pointer-events: none;
 }
 
-/* Score number — color matches gauge ring */
 .gaugeScore {
+  font-family: var(--font-mono);
   font-size: 48px;
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  display: inline-block;
-  transition: color 0.5s ease;
 }
 
 .gaugeMax {
-  font-size: 20px;
+  font-size: 16px;
   color: var(--text-secondary);
-  margin-top: -4px;
-  transition: color var(--transition);
+  line-height: 1;
 }
 
-.gaugeLabel {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 4px;
-  color: var(--text-secondary);
-}
-
-/* ─── Summary ─── */
-.summary {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding-left: 32px;
-}
-
-.summarySection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.strengthsLabel {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.gaugeRating {
+  font-size: 13px;
+  font-weight: 700;
   color: #6366f1;
-}
-
-:root[data-theme="dark"] .strengthsLabel {
-  color: #818cf8;
-}
-
-.weaknessesLabel {
-  font-size: 11px;
-  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--danger);
+  margin-top: 3px;
 }
 
-.list {
-  list-style: none;
+.gaugeBelow {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.listItem {
-  display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: var(--text-primary);
+}
+
+.citationPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.domainBonusNote {
+  font-size: 11px;
+  font-style: italic;
+  color: #10b981;
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* ─── Criteria Score List ────────────────────────────────────────────────────── */
+
+.criteriaListWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.criteriaListHeader {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted, var(--text-secondary));
+  margin-bottom: 4px;
+}
+
+.criteriaListRow {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  border-radius: 6px;
+  padding: 3px 4px;
+  margin: 0 -4px;
+  transition: background 0.15s ease;
+}
+
+.criteriaListRowClickable {
+  cursor: pointer;
+}
+
+.criteriaListRowClickable:hover {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.criteriaListRowActive {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.criteriaListChevron {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--color-text-muted, var(--text-secondary));
+  line-height: 1;
+  width: 14px;
+  text-align: center;
+}
+
+.criteriaDetail {
+  margin: 4px 0 8px 4px;
+  padding: 10px 14px;
+  background: rgba(99, 102, 241, 0.05);
+  border-left: 2px solid rgba(99, 102, 241, 0.4);
+  border-radius: 0 8px 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.criteriaDetailText {
+  font-size: 12px;
+  color: var(--color-text, var(--text-primary));
+  line-height: 1.6;
+  margin: 0;
+}
+
+.criteriaDetailEvidence {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--color-text-muted, var(--text-secondary));
   line-height: 1.5;
-  transition: color var(--transition);
 }
 
-.listCheck {
+.criteriaDetailEvidenceLabel {
+  font-style: normal;
+  font-weight: 600;
   color: #6366f1;
+  margin-right: 3px;
+}
+
+.criteriaDetailNotDetected {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ef4444;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.criteriaListLabel {
+  font-size: 12px;
+  color: var(--color-text, var(--text-primary));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.criteriaListTrack {
+  height: 4px;
+  background: var(--color-border, var(--border));
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.criteriaListFill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.criteriaListScore {
+  font-family: 'JetBrains Mono', var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.criteriaListWeight {
+  font-size: 10px;
+  color: var(--color-text-muted, var(--text-secondary));
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ─── Section 2: Composition Bar ────────────────────────────────────────────── */
+
+.compositionSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--color-surface, var(--bg-card));
+  border: 1px solid var(--color-border, var(--border));
+  border-radius: 16px;
+  padding: 20px 24px;
+}
+
+.compositionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.compositionLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted, var(--text-secondary));
+}
+
+.compositionHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compositionTotal {
+  font-size: 12px;
+  color: var(--color-text-muted, var(--text-secondary));
+  font-variant-numeric: tabular-nums;
+}
+
+.compositionBonusPill {
+  font-size: 10px;
+  font-weight: 600;
+  color: #10b981;
+  border: 1px solid #10b981;
+  border-radius: 20px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.compositionBar {
+  display: flex;
+  align-items: stretch;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-border, var(--border));
+  width: 100%;
+}
+
+.compositionSegment {
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.compositionSegmentLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+  padding: 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compositionBarEmpty {
+  flex: 1;
+  height: 100%;
+  background: transparent;
+  min-width: 0;
+}
+
+.compositionLegendGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.compositionLegendCard {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--color-bg, var(--bg));
+  border: 1px solid var(--color-border, var(--border));
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.compositionLegendTop {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 2px;
+}
+
+.compositionLegendDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.compositionLegendShort {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-muted, var(--text-secondary));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.compositionLegendPts {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.compositionLegendScore {
+  font-family: 'JetBrains Mono', var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+.compositionLegendMiniTrack {
+  height: 3px;
+  background: var(--color-border, var(--border));
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.compositionLegendMiniFill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+/* ─── Section 3: Priority Fix Callout ───────────────────────────────────────── */
+
+.priorityCallout {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-left: 4px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.06);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.priorityLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.priorityRight {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  align-self: flex-start;
+}
+
+:root[data-theme="dark"] .priorityRight {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.priorityHeader {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.priorityTag {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #f59e0b;
+}
+
+.priorityCriterionName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.priorityScoreBadge {
   font-size: 13px;
   font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 1px;
+  font-variant-numeric: tabular-nums;
 }
 
-:root[data-theme="dark"] .listCheck {
-  color: #818cf8;
+.priorityIssue {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
-.listX {
-  color: var(--danger);
+.priorityImpact {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.priorityGainRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.priorityGainLabel {
+  color: var(--text-secondary);
+}
+
+.priorityGainValue {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.priorityGainDelta {
   font-size: 13px;
   font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 1px;
+  color: #10b981;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(16, 185, 129, 0.2);
 }
 
-/* ─── Criteria breakdown ─── */
-.section {
+.priorityGainNote {
+  font-size: 10px;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* ─── Section 4: Criteria Grid ──────────────────────────────────────────────── */
+
+.criteriaSection {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.heading {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e1b4b;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
-  transition: color var(--transition), border-color var(--transition);
-}
-
-:root[data-theme="dark"] .heading {
-  color: #f0f0ff;
-  border-bottom-color: rgba(129, 140, 248, 0.2);
-}
-
-.sectionHint {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: -6px;
-  transition: color var(--transition);
-}
-
-/* ─── Criteria card grid ─── */
-.criteriaCardGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.criteriaGrid {
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
 }
 
 .criterionCard {
-  background: rgba(255, 255, 255, 0.7);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 16px;
-  padding: 16px;
+  flex: 1 1 calc(50% - 8px);
+  max-width: calc(50% - 8px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  cursor: pointer;
-  transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  transition: box-shadow 0.15s ease;
 }
 
 .criterionCard:hover {
-  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.12);
-  transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.25);
-}
-
-.criterionCardExpanded {
-  border-color: rgba(99, 102, 241, 0.3);
-}
-
-:root[data-theme="dark"] .criterionCard {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 :root[data-theme="dark"] .criterionCard:hover {
-  border-color: rgba(129, 140, 248, 0.3);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-.criterionCardHeader {
+.criterionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
 
-.criterionCardLabel {
-  font-size: 13px;
-  font-weight: 600;
+.criterionLabel {
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-primary);
   line-height: 1.3;
-  transition: color var(--transition);
 }
 
-.criterionCardBadge {
-  font-size: 11px;
+.criterionBadge {
+  font-size: 13px;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 999px;
   border: 1px solid;
+  border-radius: 999px;
+  padding: 2px 8px;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
 }
 
-.criterionCardBarTrack {
-  height: 4px;
-  background: rgba(99, 102, 241, 0.1);
-  border-radius: 2px;
-  overflow: hidden;
-  transition: background var(--transition);
+.criterionBarRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.criterionCardBarFill {
+.criterionBarTrack {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.criterionBarFill {
   height: 100%;
   border-radius: 2px;
 }
 
-.criterionCardSummary {
-  font-size: 12px;
+.criterionWeight {
+  font-size: 10px;
   color: var(--text-secondary);
-  line-height: 1.5;
-  transition: color var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.criterionCardFull {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  padding-top: 8px;
-  border-top: 1px solid rgba(99, 102, 241, 0.1);
-  transition: color var(--transition), border-color var(--transition);
-}
-
-/* ─── Citation likelihood ─── */
-.gaugeColumn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding-right: 32px;
-  border-right: 1px solid rgba(99, 102, 241, 0.12);
-  transition: border-color var(--transition);
-}
-
-.citationBadge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 12px 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  text-align: center;
-  min-width: 160px;
-  transition: background var(--transition), border-color var(--transition);
-}
-
-:root[data-theme="dark"] .citationBadge {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.citationLabel {
+.severityTag {
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 2px 8px;
   font-size: 10px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  align-self: flex-start;
+}
+
+.criterionExplanation {
+  font-size: 12px;
   color: var(--text-secondary);
-  transition: color var(--transition);
+  line-height: 1.6;
+  margin: 0;
 }
 
-.citationValue {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.2;
-  transition: color 0.3s ease;
+.evidenceInline {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-left: 2px solid #6366f1;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
-/* ─── Responsive ─── */
-@media (max-width: 700px) {
-  .scoreCard { padding: 20px; }
-  .topRow { grid-template-columns: 1fr; }
-  .gaugeColumn { border-right: none; border-bottom: 1px solid rgba(99, 102, 241, 0.12); padding-right: 0; padding-bottom: 24px; }
-  .summary { padding-left: 0; padding-top: 24px; }
-  .criteriaExplainerGrid { grid-template-columns: repeat(2, 1fr); }
+.evidenceLabel {
+  font-style: normal;
+  font-weight: 600;
+  color: #6366f1;
+  margin-right: 4px;
 }
+
+.domainBonusRow {
+  text-align: center;
+  font-size: 12px;
+  padding: 4px 0;
+}
+
+.domainBonusPositive {
+  color: #10b981;
+}
+
+.domainBonusNone {
+  color: var(--text-secondary);
+}
+
+/* ─── Section 5: Strengths ───────────────────────────────────────────────────── */
+
+.strengthsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.strengthsHeading {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-left: 12px;
+  border-left: 3px solid #10b981;
+  line-height: 1.4;
+}
+
+.strengthsPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.strengthPill {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10b981;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #10b981;
+  line-height: 1.4;
+}
+
+.strengthsEmpty {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
-  .criteriaCardGrid { grid-template-columns: 1fr; }
+  .heroCard {
+    flex-direction: column;
+    padding: 24px 20px;
+  }
+
+  .heroDivider {
+    width: 100%;
+    height: 1px;
+    margin: 20px 0;
+  }
+
+  .heroRight {
+    width: 100%;
+  }
+
+  .criteriaListRow {
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 8px;
+  }
+
+  .criterionCard {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .compositionLegendGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .priorityCallout {
+    flex-direction: column;
+  }
+
+  .priorityRight {
+    min-width: unset;
+    width: 100%;
+  }
 }

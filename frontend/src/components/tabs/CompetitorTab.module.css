@@ -1,577 +1,406 @@
+/* ── Page ──────────────────────────────────────────────────────────────────── */
 .page {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
 }
 
 .empty {
+  padding: 72px 24px;
+  text-align: center;
   color: var(--text-secondary);
   font-size: 15px;
-  text-align: center;
-  padding: 60px 0;
 }
 
-/* ─── Rich empty state ─── */
-.emptyState {
+/* ── Zone 1: Landscape Strip ──────────────────────────────────────────────── */
+.landscapeStrip {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 60px 24px;
-  text-align: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 18px;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 12px;
 }
 
-.emptyIcon {
-  width: 48px;
-  height: 48px;
-  color: var(--text-secondary);
-  opacity: 0.45;
-}
-
-.emptyHeading {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-  transition: color var(--transition);
-}
-
-.emptySubtext {
-  font-size: 13px;
-  color: var(--text-secondary);
-  max-width: 400px;
-  line-height: 1.6;
-  margin: 0;
-  transition: color var(--transition);
-}
-
-/* ─── Global toggle/expand controls ─── */
-.chevronIcon {
-  flex-shrink: 0;
-  transition: transform 200ms ease;
-}
-
-.chevronOpen {
-  transform: rotate(180deg);
-}
-
-.showMoreBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  padding: 0;
-  font-weight: 500;
-  transition: color 0.15s ease;
-}
-
-.showMoreBtn:hover {
-  color: var(--accent-text);
-}
-
-/* ─── Explainer toggle ─── */
-.explainerToggleWrap {
+.statPill {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.explainerToggle {
-  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  padding: 0;
-  font-weight: 500;
-  text-align: left;
-  transition: color 0.15s ease;
-}
-
-.explainerToggle:hover {
-  color: var(--accent-text);
-}
-
-.explainerBody {
-  overflow: hidden;
-}
-
-.explainerBodyInner {
-  padding: 16px 20px 20px;
+  gap: 7px;
   background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  margin-top: 10px;
-  transition: background var(--transition), border-color var(--transition);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
-.explainerSectionLabel {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-  transition: color var(--transition);
+.pillIcon {
+  color: #6366f1;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.explainerCards {
+.pillLabel {
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+/* ── Zone 2: Competitor Cards ──────────────────────────────────────────────── */
+.cardsList {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.explainerCard {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--bg-surface);
+.compCard {
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-left: 3px solid;
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  transition: background var(--transition), border-color var(--transition);
+  border-radius: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
 }
 
-.explainerCardIcon {
-  font-size: 18px;
-  line-height: 1;
-  flex-shrink: 0;
-  margin-top: 1px;
+.compCard:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
 }
 
-.explainerCardTitle {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 2px;
-  transition: color var(--transition);
+.compCardTop {
+  border-left: 3px solid #6366f1;
 }
 
-.explainerCardDesc {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  transition: color var(--transition);
-}
-
-/* ─── Section ─── */
-.section {
+/* Collapsed row */
+.cardRow {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 16px;
 }
 
-.sectionTitle {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-  transition: color var(--transition), border-color var(--transition);
-}
-
-.sectionHint {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin-top: -4px;
-  transition: color var(--transition);
-}
-
-.sectionHint strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-/* ─── Landscape summary ─── */
-.summary {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.summaryText {
-  font-size: 15px;
-  color: var(--text-primary);
-  line-height: 1.7;
-  transition: color var(--transition);
-}
-
-.contentTypes {
+.cardLeft {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+  width: 220px;
+}
+
+.cardRank {
+  font-size: 48px;
+  font-weight: 700;
+  color: rgba(99, 102, 241, 0.15);
+  line-height: 1;
+  width: 52px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+}
+
+
+.cardIdentity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.domainRow {
+  display: flex;
+  align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-.ctLabel {
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-/* Blue pill for dominant content types */
-.ctTagBlue {
-  font-size: 13px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--accent-glow);
-  background: var(--accent-dim);
-  color: var(--accent-text);
-  font-weight: 500;
-}
-
-/* ─── Competitor table ─── */
-.tableWrap {
-  width: 100%;
-  overflow-x: auto;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  transition: all var(--transition);
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.thead tr {
-  background: var(--bg-card-hover);
-  border-bottom: 1px solid var(--border);
-}
-
-.thRank {
-  width: 40px;
-  padding: 10px 12px;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6B7280;
-}
-
-.thDomain {
-  width: 180px;
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6B7280;
-}
-
-.thSignal {
-  width: 280px;
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6B7280;
-}
-
-.thStrengths {
-  width: 320px;
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6B7280;
-}
-
-/* ─── Table rows ─── */
-.row {
-  border-bottom: 1px solid var(--border);
-  transition: background 0.15s ease;
-}
-
-.row:last-child { border-bottom: none; }
-
-.row:hover { background: var(--bg-card-hover); }
-
-.tdRank {
-  padding: 16px 12px;
-  text-align: center;
-  vertical-align: top;
-}
-
-.rankBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
-  transition: color var(--transition);
-}
-
-.tdDomain {
-  padding: 16px 14px;
-  vertical-align: top;
-}
-
-.domainCell {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.domainName {
-  font-size: 14px;
+.cardDomain {
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
-  transition: color var(--transition);
+  word-break: break-word;
 }
 
-.pageTitle {
+.topBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cardDiff {
+  flex: 1;
+  min-width: 0;
   font-size: 13px;
+  font-style: italic;
   color: var(--text-secondary);
-  line-height: 1.35;
-  overflow: hidden;
+  line-height: 1.5;
+  margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  transition: color var(--transition);
+  overflow: hidden;
 }
 
-.visitLink {
-  display: inline-flex;
+.cardRight {
+  display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #6B7280;
-  margin-top: 4px;
-  text-decoration: none;
-  transition: all 0.15s ease;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-.visitLink:hover { text-decoration: underline; }
-
-/* ─── Signal cell ─── */
-.tdSignal {
-  padding: 16px 14px;
-  vertical-align: top;
-}
-
-/* Blue badge for key_differentiator */
-.signalBadge {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 3px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--accent-glow);
-  background: var(--accent-dim);
-  color: var(--accent-text);
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-
-/* Why AI cites — always visible */
-.whyCitedWrap {
+.visitBtn {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #6366f1;
+  background: transparent;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  line-height: 1;
 }
 
-.whyCitedLabel {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary);
-  transition: color var(--transition);
+.visitBtn:hover {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.7);
 }
 
-.whyCitedList {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin: 0;
-  padding-left: 14px;
-  border-left: 2px solid var(--border);
-  list-style: disc;
+.chevron {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition: border-color var(--transition);
+  align-items: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
-/* ─── Strengths cell ─── */
-.tdStrengths {
-  padding: 16px 14px;
-  vertical-align: top;
+/* ── Expanded Content ──────────────────────────────────────────────────────── */
+.expandedContent {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
 }
 
-.strengthsList {
+.expandedColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 16px;
+}
+
+.expandedCol {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.strengthItem {
+.expandedColLabel {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6366f1;
+}
+
+.citesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 8px;
 }
 
-.strengthCheck {
-  color: var(--success);
-  flex-shrink: 0;
-  margin-top: 1px;
-  stroke: var(--success);
-}
-
-.strengthText {
+.citesItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   font-size: 13px;
-  color: var(--success);
-  line-height: 1.45;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
-.moreTag {
-  font-size: 12px;
-  color: var(--text-dim);
-  padding: 3px 6px;
-  transition: color var(--transition);
+.checkIcon {
+  color: #6366f1;
+  flex-shrink: 0;
+  margin-top: 3px;
 }
 
-/* ─── Gap connector ─── */
-.gapConnector {
+.chipRow {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 0;
-}
-
-.gapConnectorLine {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.gapConnectorBadge {
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
+}
+
+.chip {
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+  border-radius: 20px;
+  padding: 3px 10px;
+  line-height: 1.4;
+}
+
+.visitLink {
+  display: inline-block;
+  color: #6366f1;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.visitLink:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+/* ── Zone 3: Gaps ──────────────────────────────────────────────────────────── */
+.gapsSection {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.gapsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 22px 16px;
+}
+
+.gapsTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.gapsPill {
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 20px;
+  padding: 4px 12px;
   white-space: nowrap;
-  padding: 6px 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--bg-card);
-  transition: all var(--transition);
 }
 
-/* ─── Gap cards ─── */
-.gapCards {
+.gapsList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 .gapCard {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-left: 3px solid;
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  overflow: hidden;
-  transition: border-color 0.15s ease, background var(--transition), box-shadow 0.15s ease;
-}
-
-.gapCard[role="button"] {
-  cursor: pointer;
-}
-
-.gapCard[role="button"]:hover {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.gapCardExpanded {
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
-}
-
-.gapCardHeader {
-  display: flex;
   align-items: flex-start;
-  gap: 14px;
-  padding: 18px 20px;
+  gap: 16px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+  cursor: default;
+  transition: background 0.15s ease;
 }
 
-.gapCardNum {
-  flex-shrink: 0;
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  opacity: 0.9;
-  margin-top: 1px;
-}
-
-.gapCardTitle {
-  flex: 1;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-primary);
-  line-height: 1.55;
-  transition: color var(--transition);
-}
-
-.gapCardToggle {
-  flex-shrink: 0;
+.gapNumber {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  margin-top: 2px;
-  opacity: 0.7;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-family: var(--font-mono);
 }
 
-.gapCardDetail {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  padding: 0 20px 18px 58px;
+.gapText {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.5;
   margin: 0;
-  transition: color var(--transition);
 }
 
-/* ─── Responsive ─── */
-@media (max-width: 768px) {
-  .explainerRow { grid-template-columns: 1fr; gap: 16px; }
-  .table { table-layout: auto; }
-  .thSignal, .tdSignal { display: none; }
-  .thDomain { width: auto; }
+.gapTag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 500;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  white-space: nowrap;
+  margin-top: 3px;
 }
 
-@media (max-width: 480px) {
-  .thStrengths, .tdStrengths { display: none; }
+/* ── Mobile ─────────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cardLeft {
+    width: auto;
+  }
+
+  .cardRank {
+    font-size: 32px;
+    width: 38px;
+  }
+
+  .cardRow {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .cardDiff {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .cardRight {
+    margin-left: auto;
+  }
+
+  .expandedColumns {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .gapsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .gapTag {
+    display: none;
+  }
+
+  .landscapeStrip {
+    gap: 8px;
+    padding: 12px 14px;
+  }
+
+  .statPill {
+    font-size: 11px;
+    padding: 5px 11px;
+  }
 }

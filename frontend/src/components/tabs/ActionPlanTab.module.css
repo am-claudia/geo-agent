@@ -510,26 +510,30 @@
   transition: color var(--transition);
 }
 
-.closingBullets {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-left: 2px solid rgba(99, 102, 241, 0.2);
-  padding-left: 16px;
-}
-
-.closingBulletItem {
-  font-size: 15px;
+.closingLead {
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text-primary);
   line-height: 1.6;
+  margin: 6px 0 0;
   transition: color var(--transition);
 }
 
-.closingBulletFirst {
-  font-weight: 600;
+.closingBullets {
+  margin: 8px 0 0;
+  padding: 0 0 0 14px;
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--text-secondary);
+}
+
+.closingBulletItem {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  transition: color var(--transition);
 }
 
 /* ─── Responsive ─── */

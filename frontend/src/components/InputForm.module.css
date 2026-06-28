@@ -34,26 +34,17 @@
 
 /* ─── Full-page layout ─── */
 .page {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px 24px;
-  position: relative;
+  height: calc(100dvh - 60px); /* 60px = navbar height */
   overflow: hidden;
-
-  /* Animated mesh gradient — blues, indigos, light purple */
-  background: linear-gradient(-45deg, #eef2ff, #e0e7ff, #f5f3ff, #ede9fe, #eef2ff);
-  background-size: 400% 400%;
-  animation: gradientFlow 12s ease infinite;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 24px;
+  position: relative;
 }
 
-/* Dark mode gradient */
-:root[data-theme="dark"] .page {
-  background: linear-gradient(-45deg, #0f1117, #0d1122, #10101e, #0c1118, #0f1117);
-  background-size: 400% 400%;
-  animation: gradientFlow 12s ease infinite;
-}
+/* Dark mode handled via var(--bg-base) in inline style */
 
 /* Dot grid overlay */
 .page::before {
@@ -144,7 +135,7 @@
   border: 1px solid rgba(99, 102, 241, 0.35);
   padding: 4px 14px;
   border-radius: 999px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
   background: rgba(99, 102, 241, 0.08);
   transition: background 0.2s ease, border-color 0.2s ease;
 }
@@ -162,10 +153,10 @@
 
 /* ─── Heading ─── */
 .heading {
-  font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
   line-height: 1.05;
   letter-spacing: -0.03em;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .headingLight {
@@ -218,7 +209,7 @@
   color: var(--text-secondary);
   line-height: 1.6;
   max-width: 480px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   transition: color var(--transition);
 }
 
@@ -228,13 +219,13 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   background: rgba(255, 255, 255, 0.6);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 999px;
-  padding: 16px 40px;
+  padding: 0.6rem 2rem;
 }
 
 :root[data-theme="dark"] .stats {
@@ -256,7 +247,7 @@
 }
 
 .statNum {
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: var(--accent);
   line-height: 1;
@@ -273,7 +264,7 @@
 
 .statDivider {
   width: 1px;
-  height: 40px;
+  height: 30px;
   background: rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
 }
@@ -290,7 +281,7 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 20px;
-  padding: 22px 26px;
+  padding: 1.5rem 2rem;
   text-align: left;
   box-shadow:
     0 8px 32px rgba(99, 102, 241, 0.12),
@@ -322,7 +313,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .field {
@@ -390,7 +381,7 @@
   width: 100%;
   background: transparent;
   border: none;
-  padding: 13px 14px 13px 40px;
+  padding: 10px 14px 10px 40px;
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 14px;
@@ -427,7 +418,7 @@
   justify-content: center;
   gap: 10px;
   width: 100%;
-  height: 52px;
+  height: 44px;
   background: linear-gradient(135deg, #6366f1, #4f46e5);
   color: #fff;
   border: none;
@@ -496,7 +487,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 0.75rem;
 }
 
 .pipelineLabel {
@@ -563,11 +554,12 @@
 
 /* ─── Responsive ─── */
 @media (max-width: 480px) {
-  .page       { padding: 16px; }
-  .card       { padding: 18px 16px; }
-  .stats      { gap: 16px; padding: 14px 24px; }
-  .statNum    { font-size: 1.7rem; }
+  .page        { padding: 12px 16px; }
+  .card        { padding: 1rem 1rem; }
+  .stats       { gap: 14px; padding: 0.5rem 1.2rem; }
+  .statNum     { font-size: 1.4rem; }
+  .heading     { font-size: clamp(2rem, 8vw, 2.8rem); }
   .pipelineArrow { display: none; }
-  .orbBlue    { width: 280px; height: 280px; top: -80px; right: -60px; }
-  .orbPurple  { width: 240px; height: 240px; bottom: -80px; left: -40px; }
+  .orbBlue     { width: 280px; height: 280px; top: -80px; right: -60px; }
+  .orbPurple   { width: 240px; height: 240px; bottom: -80px; left: -40px; }
 }

@@ -1,49 +1,87 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { getScoreColor } from '../../utils/scoreColor.js';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './ScoreTab.module.css';
 
-const CRITERIA_EXPLAINER = [
-  { icon: '📊', name: 'Quotability', desc: 'Clear, citable statements AI can lift verbatim' },
-  { icon: '🏅', name: 'Authority & Credibility', desc: 'Expertise signals: credentials, data sources, author info' },
-  { icon: '❓', name: 'Q&A Format', desc: 'Directly answers questions the way users prompt AI' },
-  { icon: '🗂️', name: 'Structural Clarity', desc: 'Headings organized so AI can parse and extract key points' },
-  { icon: '📖', name: 'Comprehensiveness', desc: 'Covers the topic thoroughly to be the definitive source' },
-  { icon: '🎯', name: 'Semantic Clarity', desc: 'Precise language, free of ambiguity, easy for AI to interpret' },
-  { icon: '🕐', name: 'Freshness Signals', desc: 'Publication dates or updates that signal ongoing relevance' },
-  { icon: '🌐', name: 'Domain Authority', desc: 'Domain recognized as authoritative in LLM training data' },
+const CRITERIA = [
+  {
+    key: 'evidence_density', label: 'Evidence Density', weight: 20, shortLabel: 'Evidence',
+    description: 'How much factual, verifiable evidence — statistics, data points, citations, named sources — appears in your content. AI citation systems strongly favor content that backs every claim with specifics rather than vague generalities.',
+    howToFix: 'Add concrete numbers, cite named studies or reports, and include attributable quotes. Replace phrases like "many experts say" with "According to [Source], X% of…"',
+  },
+  {
+    key: 'chunk_quality', label: 'Chunk Quality', weight: 18, shortLabel: 'Chunks',
+    description: 'Whether your content is organized into clean, self-contained passages that an AI can extract as a standalone answer. Poor chunking — walls of text, buried answers — makes your content harder to cite directly.',
+    howToFix: 'Use short paragraphs (3–5 sentences), clear subheadings, and put the direct answer at the start of each section before expanding on it.',
+  },
+  {
+    key: 'fluency_quality', label: 'Fluency & Content Quality', weight: 15, shortLabel: 'Fluency',
+    description: 'The overall clarity, readability, and grammatical quality of your writing. AI systems are more likely to reproduce — and credit — fluent, well-structured prose over awkward or error-prone text.',
+    howToFix: 'Proofread for grammar and clarity, avoid jargon without explanation, and prefer active voice and short sentences.',
+  },
+  {
+    key: 'question_structure', label: 'Question-Oriented Structure', weight: 12, shortLabel: 'Q&A',
+    description: 'How well your content is structured around questions real users ask. AI systems are built to answer questions, so aligning your headings and sections with search queries and FAQ patterns dramatically increases citation likelihood.',
+    howToFix: 'Rewrite section headings as questions ("What is…?", "How do I…?"), and add an FAQ section targeting common queries in your topic area.',
+  },
+  {
+    key: 'eeat_credibility', label: 'E-E-A-T & Author Credibility', weight: 12, shortLabel: 'E-E-A-T',
+    description: 'Experience, Expertise, Authoritativeness, and Trustworthiness signals. This includes visible author bylines, credentials, author bios, institutional affiliations, and about pages. A score of 0 means none of these signals were detected.',
+    howToFix: 'Add an author byline with credentials, link to an author bio page, include an "About" section, and mention any relevant certifications, experience, or institutional backing.',
+  },
+  {
+    key: 'freshness_signals', label: 'Freshness Signals', weight: 10, shortLabel: 'Freshness',
+    description: 'Visible indicators that your content is current — publication dates, "last updated" timestamps, and references to recent events or data. AI systems prefer up-to-date sources, especially for time-sensitive topics. A score of 0 means no freshness signals were found.',
+    howToFix: 'Add a visible publication date and "Last updated" timestamp to every page. Reference recent data (within the past 1–2 years) and update content regularly.',
+  },
+  {
+    key: 'schema_structured_data', label: 'Schema & Structured Data', weight: 8, shortLabel: 'Schema',
+    description: 'Machine-readable markup (JSON-LD, microdata) that tells AI systems exactly what your content is — an article, a FAQ, a product, a review. Schema.org markup helps AI parse and classify your content more accurately. A score of 0 means no structured data was detected.',
+    howToFix: 'Add JSON-LD markup for Article, FAQPage, or BreadcrumbList schema. Tools like Google\'s Rich Results Test can validate your implementation.',
+  },
+  {
+    key: 'domain_entity_authority', label: 'Domain Entity Authority', weight: 5, shortLabel: 'Authority',
+    description: 'How strongly your domain is recognized as an authority on this specific topic across the web. This is built over time through consistent topical focus, inbound links from relevant sources, and being mentioned alongside established entities in the field.',
+    howToFix: 'Publish consistently on your core topic, earn backlinks from authoritative sources in your niche, and ensure your brand is mentioned alongside credible entities.',
+  },
 ];
 
-const CRITERIA_LABELS = {
-  authority:               'Authority & Credibility',
-  structural_clarity:      'Structural Clarity',
-  quotability:             'Quotability',
-  comprehensiveness:       'Comprehensiveness',
-  semantic_clarity:        'Semantic Clarity',
-  freshness:               'Freshness Signals',
-  question_answering:      'Q&A Format',
-  evidence_density:        'Evidence Density',
-  chunk_quality:           'Chunk Quality',
-  question_structure:      'Question-Oriented Structure',
-  eeat_authority:          'E-E-A-T & Author Credibility',
-  schema_markup:           'Schema & Structured Data',
-  fluency_quality:         'Fluency & Content Quality',
-  domain_entity_authority: 'Domain Entity Authority',
-};
+function scoreColor(score) {
+  if (score >= 7) return '#10b981';
+  if (score >= 4) return '#f59e0b';
+  return '#ef4444';
+}
 
-function scoreLabel(score) {
+function scoreColorProportional(score) {
+  if (score >= 7) {
+    const t = (score - 7) / 3;
+    return `hsl(160, ${Math.round(55 + t * 29)}%, ${Math.round(32 + t * 10)}%)`;
+  }
+  if (score >= 4) {
+    const t = (score - 4) / 2;
+    return `hsl(38, ${Math.round(60 + t * 32)}%, ${Math.round(36 + t * 8)}%)`;
+  }
+  const t = score / 3;
+  return `hsl(0, ${Math.round(55 + t * 27)}%, ${Math.round(33 + t * 12)}%)`;
+}
+
+function scoreRating(score) {
   if (score >= 8) return 'Excellent';
   if (score >= 7) return 'Good';
   if (score >= 5) return 'Fair';
-  return 'Needs Work';
+  return 'Poor';
 }
 
-function citationLikelihood(domainScore, overallScore) {
-  if (domainScore >= 8 && overallScore >= 6) return { label: 'Very High',     color: '#22c55e' };
-  if (domainScore >= 8)                      return { label: 'High',          color: '#4ade80' };
-  if (domainScore >= 6)                      return { label: 'Moderate–High', color: '#f97316' };
-  if (overallScore >= 5)                     return { label: 'Moderate',      color: '#d97706' };
-  return                                            { label: 'Low',           color: '#ef4444' };
+function citationLikelihood(score) {
+  if (score >= 8) return { label: 'High',          color: '#10b981' };
+  if (score >= 6) return { label: 'Moderate–High', color: '#6366f1' };
+  if (score >= 4) return { label: 'Moderate',      color: '#f59e0b' };
+  return              { label: 'Low',            color: '#ef4444' };
+}
+
+function severityInfo(score) {
+  if (score < 4) return { label: 'Critical',   color: '#ef4444' };
+  if (score < 7) return { label: 'Needs Work', color: '#f59e0b' };
+  return              { label: 'Strong',      color: '#10b981' };
 }
 
 function useCountUp(target, duration = 800) {
@@ -51,297 +89,479 @@ function useCountUp(target, duration = 800) {
   useEffect(() => {
     const start = performance.now();
     function tick(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(target * eased);
-      if (progress < 1) requestAnimationFrame(tick);
+      const p = Math.min((now - start) / duration, 1);
+      setValue(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
   }, [target, duration]);
   return value;
 }
 
-function Chevron({ open }) {
-  return (
-    <svg
-      className={`${styles.chevronIcon} ${open ? styles.chevronOpen : ''}`}
-      width="14" height="14" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-    >
-      <polyline points="6 9 12 15 18 9"/>
-    </svg>
-  );
-}
+// ─── Gauge Circle ─────────────────────────────────────────────────────────────
 
-function CitationLikelihood({ domainScore, overallScore }) {
-  const { label, color } = citationLikelihood(domainScore, overallScore);
-  return (
-    <motion.div
-      className={styles.citationBadge}
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.9 }}
-    >
-      <span className={styles.citationLabel}>Citation Likelihood</span>
-      <span className={styles.citationValue} style={{ color }}>{label}</span>
-    </motion.div>
-  );
-}
-
-function GaugeCircle({ score }) {
+function GaugeCircle({ score, domain_bonus }) {
   const RADIUS = 80;
-  const C = 2 * Math.PI * RADIUS; // full circumference ≈ 502.655
-
-  // Band boundaries as fractions of 0–10
-  const BAND1 = 0.5; // 0–5  = red   (50%)
-  const BAND2 = 0.7; // 5–7  = orange (20%), 7–10 = green (30%)
-
-  const RED_LEN    = BAND1 * C;
-  const ORANGE_LEN = (BAND2 - BAND1) * C;
-  const GREEN_LEN  = (1 - BAND2) * C;
-
-  // dashoffset to start each arc at its correct position on the circle
-  // formula: dashoffset = C - start_fraction * C
-  const ORANGE_OFFSET = C - RED_LEN;
-  const GREEN_OFFSET  = C - RED_LEN - ORANGE_LEN;
-
+  const C = 2 * Math.PI * RADIUS;
+  const RED_LEN    = 0.5 * C;
+  const ORANGE_LEN = 0.2 * C;
+  const GREEN_LEN  = 0.3 * C;
   const pct    = Math.min(1, Math.max(0, score / 10));
   const offset = C * (1 - pct);
-  const color  = getScoreColor(score);
+  const color  = scoreColor(score);
+  const rating = scoreRating(score);
   const displayScore = useCountUp(score, 800);
-
-  const trackStyle = { transformOrigin: 'center', transform: 'rotate(-90deg)' };
+  const citation = citationLikelihood(score);
+  const ts = { transformOrigin: 'center', transform: 'rotate(-90deg)' };
 
   return (
     <div className={styles.gaugeWrap}>
-      <svg width="200" height="200" viewBox="0 0 200 200" className={styles.gaugeSvg}>
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
-
-        {/* Color band track — red (0–5) */}
-        <circle
-          cx="100" cy="100" r={RADIUS}
-          fill="none"
-          stroke="var(--danger)"
-          strokeWidth="14"
-          strokeLinecap="butt"
-          strokeOpacity="0.22"
-          strokeDasharray={`${RED_LEN} ${C - RED_LEN}`}
-          style={trackStyle}
-        />
-        {/* Orange (5–7) */}
-        <circle
-          cx="100" cy="100" r={RADIUS}
-          fill="none"
-          stroke="var(--warning)"
-          strokeWidth="14"
-          strokeLinecap="butt"
-          strokeOpacity="0.22"
-          strokeDasharray={`${ORANGE_LEN} ${C - ORANGE_LEN}`}
-          strokeDashoffset={ORANGE_OFFSET}
-          style={trackStyle}
-        />
-        {/* Green (7–10) */}
-        <circle
-          cx="100" cy="100" r={RADIUS}
-          fill="none"
-          stroke="var(--success)"
-          strokeWidth="14"
-          strokeLinecap="butt"
-          strokeOpacity="0.22"
-          strokeDasharray={`${GREEN_LEN} ${C - GREEN_LEN}`}
-          strokeDashoffset={GREEN_OFFSET}
-          style={trackStyle}
-        />
-
-        {/* Animated score indicator — on top of the track */}
-        <motion.circle
-          cx="100" cy="100" r={RADIUS}
-          fill="none"
-          stroke={color}
-          strokeWidth="14"
-          strokeLinecap="round"
-          strokeDasharray={C}
-          initial={{ strokeDashoffset: C }}
-          animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
-          style={{ transformOrigin: 'center', transform: 'rotate(-90deg)' }}
-          filter="url(#glow)"
-        />
-      </svg>
-      <div className={styles.gaugeCenter}>
-        <motion.span
-          className={styles.gaugeScore}
-          style={{ color }}
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.5, type: 'spring', stiffness: 200 }}
-        >
-          {displayScore.toFixed(1)}
-        </motion.span>
-        <span className={styles.gaugeMax}>/10</span>
-        <span className={styles.gaugeLabel}>{scoreLabel(score)}</span>
+      <div className={styles.gaugeSvgWrap}>
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <defs>
+            <filter id="geoGlow">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          <circle cx="100" cy="100" r={RADIUS} fill="none" stroke="#ef4444" strokeWidth="14"
+            strokeLinecap="butt" strokeOpacity="0.2"
+            strokeDasharray={`${RED_LEN} ${C - RED_LEN}`} style={ts} />
+          <circle cx="100" cy="100" r={RADIUS} fill="none" stroke="#f59e0b" strokeWidth="14"
+            strokeLinecap="butt" strokeOpacity="0.2"
+            strokeDasharray={`${ORANGE_LEN} ${C - ORANGE_LEN}`}
+            strokeDashoffset={C - RED_LEN} style={ts} />
+          <circle cx="100" cy="100" r={RADIUS} fill="none" stroke="#10b981" strokeWidth="14"
+            strokeLinecap="butt" strokeOpacity="0.2"
+            strokeDasharray={`${GREEN_LEN} ${C - GREEN_LEN}`}
+            strokeDashoffset={C - RED_LEN - ORANGE_LEN} style={ts} />
+          <motion.circle
+            cx="100" cy="100" r={RADIUS}
+            fill="none" stroke={color} strokeWidth="14" strokeLinecap="round"
+            strokeDasharray={C}
+            initial={{ strokeDashoffset: C }}
+            animate={{ strokeDashoffset: offset }}
+            transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
+            style={ts}
+            filter="url(#geoGlow)"
+          />
+        </svg>
+        <div className={styles.gaugeCenter}>
+          <motion.span
+            className={styles.gaugeScore}
+            style={{ color }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.5, type: 'spring', stiffness: 200 }}
+          >
+            {displayScore.toFixed(1)}
+          </motion.span>
+          <span className={styles.gaugeMax}>/10</span>
+          <span className={styles.gaugeRating}>{rating}</span>
+        </div>
+      </div>
+      <div className={styles.gaugeBelow}>
+        <div className={styles.citationPill} style={{ color: citation.color, borderColor: citation.color }}>
+          Citation Likelihood: <strong>{citation.label}</strong>
+        </div>
+        {domain_bonus > 0 && (
+          <span className={styles.domainBonusNote}>
+            + {domain_bonus} domain authority bonus applied
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
-function CriterionCard({ label, score, explanation, index, expanded, onToggle }) {
-  const color = getScoreColor(score);
-  const pct = `${(score / 10) * 100}%`;
-  const firstSentence = explanation
-    ? explanation.split(/(?<=[.!?])\s+(?=[A-Z])/)[0]
-    : '';
+// ─── Criteria Score List ──────────────────────────────────────────────────────
+
+function CriteriaScoreList({ criteria }) {
+  const [animatedBar, setAnimatedBar] = useState(false);
+  const [expanded, setExpanded] = useState(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setAnimatedBar(true), 150);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div className={styles.criteriaListWrap}>
+      <span className={styles.criteriaListHeader}>Score Breakdown — click any row for details</span>
+      {CRITERIA.map((c, i) => {
+        const score = criteria?.[c.key]?.score ?? 0;
+        const color = scoreColor(score);
+        const isExpanded = expanded === c.key;
+        const explanation = criteria?.[c.key]?.explanation;
+        const evidence = criteria?.[c.key]?.evidence;
+        const hasApiDetail = !!(explanation || evidence);
+        const notDetected = score === 0 && !hasApiDetail;
+
+        return (
+          <div key={c.key}>
+            <div
+              className={`${styles.criteriaListRow} ${styles.criteriaListRowClickable} ${isExpanded ? styles.criteriaListRowActive : ''}`}
+              onClick={() => setExpanded(isExpanded ? null : c.key)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setExpanded(isExpanded ? null : c.key); }}
+            >
+              <span className={styles.criteriaListLabel}>{c.label}</span>
+              <div className={styles.criteriaListTrack}>
+                <div
+                  className={styles.criteriaListFill}
+                  style={{
+                    backgroundColor: color,
+                    width: animatedBar ? `${(score / 10) * 100}%` : '0%',
+                    transition: `width 0.5s ease ${i * 0.05}s`,
+                  }}
+                />
+              </div>
+              <span className={styles.criteriaListScore} style={{ color }}>
+                {score}/10
+              </span>
+              <span className={styles.criteriaListWeight}>{c.weight}%</span>
+              <motion.span
+                className={styles.criteriaListChevron}
+                animate={{ rotate: isExpanded ? 180 : 0 }}
+                transition={{ duration: 0.18 }}
+              >
+                ▾
+              </motion.span>
+            </div>
+
+            <AnimatePresence initial={false}>
+              {isExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.22, ease: 'easeInOut' }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <div className={styles.criteriaDetail}>
+                    {hasApiDetail ? (
+                      <>
+                        {explanation && (
+                          <p className={styles.criteriaDetailText}>{explanation}</p>
+                        )}
+                        {evidence && (
+                          <div className={styles.criteriaDetailEvidence}>
+                            <span className={styles.criteriaDetailEvidenceLabel}>Evidence:</span> {evidence}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {notDetected && (
+                          <p className={styles.criteriaDetailNotDetected}>Not detected in your content.</p>
+                        )}
+                        {c.description && (
+                          <p className={styles.criteriaDetailText}>{c.description}</p>
+                        )}
+                        {c.howToFix && (
+                          <div className={styles.criteriaDetailEvidence}>
+                            <span className={styles.criteriaDetailEvidenceLabel}>How to improve:</span> {c.howToFix}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Score Composition Bar ────────────────────────────────────────────────────
+
+function ScoreCompositionBar({ criteria, overall_score, domain_bonus }) {
+  const [animatedBar, setAnimatedBar] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setAnimatedBar(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div className={styles.compositionSection}>
+      <div className={styles.compositionHeaderRow}>
+        <span className={styles.compositionLabel}>HOW YOUR SCORE IS BUILT</span>
+        <div className={styles.compositionHeaderRight}>
+          <span className={styles.compositionTotal}>
+            Weighted total: {overall_score?.toFixed(1)}/10
+          </span>
+          {domain_bonus > 0 && (
+            <span className={styles.compositionBonusPill}>
+              +{domain_bonus} domain bonus
+            </span>
+          )}
+        </div>
+      </div>
+      <div className={styles.compositionBar}>
+        {CRITERIA.map((c, i) => {
+          const score = criteria?.[c.key]?.score ?? 0;
+          const contribution = (score / 10) * c.weight;
+          const color = scoreColorProportional(score);
+          const isFirst = i === 0;
+          const isLast = i === CRITERIA.length - 1;
+          const borderRadius = isFirst ? '8px 0 0 8px' : isLast ? '0 8px 8px 0' : '0';
+          return (
+            <div
+              key={c.key}
+              className={styles.compositionSegment}
+              style={{
+                width: animatedBar ? `${contribution}%` : '0%',
+                backgroundColor: color,
+                borderRadius,
+                transition: `width 0.6s ease ${i * 0.06}s`,
+              }}
+            >
+              {contribution > 5 && (
+                <span className={styles.compositionSegmentLabel}>{c.shortLabel}</span>
+              )}
+            </div>
+          );
+        })}
+        <div className={styles.compositionBarEmpty} />
+      </div>
+      <div className={styles.compositionLegendGrid}>
+        {CRITERIA.map(c => {
+          const score = criteria?.[c.key]?.score ?? 0;
+          const color = scoreColorProportional(score);
+          const pts = (score * c.weight / 100).toFixed(1);
+          return (
+            <div key={c.key} className={styles.compositionLegendCard}>
+              <div className={styles.compositionLegendTop}>
+                <span className={styles.compositionLegendDot} style={{ background: color }} />
+                <span className={styles.compositionLegendShort}>{c.shortLabel}</span>
+              </div>
+              <span className={styles.compositionLegendPts} style={{ color }}>+{pts}pts</span>
+              <span className={styles.compositionLegendScore} style={{ color }}>{score}/10</span>
+              <div className={styles.compositionLegendMiniTrack}>
+                <div
+                  className={styles.compositionLegendMiniFill}
+                  style={{
+                    backgroundColor: color,
+                    width: animatedBar ? `${(score / 10) * 100}%` : '0%',
+                    transition: `width 0.6s ease`,
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Priority Fix Callout ─────────────────────────────────────────────────────
+
+function PriorityFixCallout({ top_weaknesses, criteria }) {
+  if (!top_weaknesses?.length) return null;
+
+  const opportunity = top_weaknesses
+    .map((w) => ({ ...w, criteriaInfo: CRITERIA.find((c) => c.key === w.criterion) }))
+    .filter((w) => w.criteriaInfo)
+    .sort((a, b) => b.criteriaInfo.weight - a.criteriaInfo.weight)[0];
+
+  if (!opportunity) return null;
+
+  const score = criteria?.[opportunity.criterion]?.score ?? 0;
+  const weight = opportunity.criteriaInfo.weight;
+  const currentContrib = ((score / 10) * weight).toFixed(1);
+  const fixedContrib = (0.8 * weight).toFixed(1);
+  const delta = (parseFloat(fixedContrib) - parseFloat(currentContrib)).toFixed(1);
+
+  return (
+    <div className={styles.priorityCallout}>
+      <div className={styles.priorityLeft}>
+        <div className={styles.priorityHeader}>
+          <span className={styles.priorityTag}>BIGGEST OPPORTUNITY</span>
+          <span className={styles.priorityCriterionName}>{opportunity.criteriaInfo.label}</span>
+          <span className={styles.priorityScoreBadge} style={{ color: scoreColor(score) }}>{score}/10</span>
+        </div>
+        {opportunity.issue && <p className={styles.priorityIssue}>{opportunity.issue}</p>}
+        {opportunity.impact && (
+          <p className={styles.priorityImpact}><strong>Impact:</strong> {opportunity.impact}</p>
+        )}
+      </div>
+      <div className={styles.priorityRight}>
+        <div className={styles.priorityGainRow}>
+          <span className={styles.priorityGainLabel}>Current contribution</span>
+          <span className={styles.priorityGainValue}>{currentContrib} pts</span>
+        </div>
+        <div className={styles.priorityGainRow}>
+          <span className={styles.priorityGainLabel}>If fixed to 8/10</span>
+          <span className={styles.priorityGainValue}>{fixedContrib} pts</span>
+        </div>
+        <div className={styles.priorityGainDelta}>
+          +{delta} pts potential score increase
+          <span className={styles.priorityGainNote}> (estimated)</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Criterion Card ───────────────────────────────────────────────────────────
+
+function CriterionCard({ criterion, data, index }) {
+  const score = data?.score ?? 0;
+  const color = scoreColor(score);
+  const { label: sevLabel, color: sevColor } = severityInfo(score);
+  const borderLeft = score < 4 ? '3px solid #ef4444' : score < 7 ? '3px solid #f59e0b' : undefined;
 
   return (
     <motion.div
-      className={`${styles.criterionCard} ${expanded ? styles.criterionCardExpanded : ''}`}
-      onClick={onToggle}
+      className={styles.criterionCard}
+      style={borderLeft ? { borderLeft } : undefined}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05 }}
-      whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(0,0,0,0.10)' }}
     >
-      <div className={styles.criterionCardHeader}>
-        <span className={styles.criterionCardLabel}>{label}</span>
-        <span className={styles.criterionCardBadge} style={{ color, borderColor: color }}>
+      <div className={styles.criterionHeader}>
+        <span className={styles.criterionLabel}>{criterion.label}</span>
+        <span
+          className={styles.criterionBadge}
+          style={{
+            color,
+            borderColor: color,
+            background: score < 4 ? 'rgba(239,68,68,0.15)' : score < 7 ? 'rgba(245,158,11,0.15)' : 'rgba(16,185,129,0.15)',
+          }}
+        >
           {score}/10
         </span>
       </div>
 
-      <div className={styles.criterionCardBarTrack}>
-        <motion.div
-          className={styles.criterionCardBarFill}
-          style={{ background: color }}
-          initial={{ width: 0 }}
-          animate={{ width: pct }}
-          transition={{ duration: 0.7, delay: index * 0.05 + 0.15, ease: 'easeOut' }}
-        />
+      <div className={styles.criterionBarRow}>
+        <div className={styles.criterionBarTrack}>
+          <motion.div
+            className={styles.criterionBarFill}
+            style={{ background: color }}
+            initial={{ width: 0 }}
+            animate={{ width: `${(score / 10) * 100}%` }}
+            transition={{ duration: 0.7, delay: index * 0.05 + 0.15, ease: 'easeOut' }}
+          />
+        </div>
+        <span className={styles.criterionWeight}>{criterion.weight}% of score</span>
       </div>
 
-      {firstSentence && (
-        <p className={styles.criterionCardSummary}>{firstSentence}</p>
+      <span
+        className={styles.severityTag}
+        style={{ color: sevColor, borderColor: sevColor, background: `${sevColor}26` }}
+      >
+        {sevLabel}
+      </span>
+
+      {data?.explanation && (
+        <p className={styles.criterionExplanation}>{data.explanation}</p>
       )}
 
-      {expanded && explanation && explanation !== firstSentence && (
-        <motion.p
-          className={styles.criterionCardFull}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-        >
-          {explanation}
-        </motion.p>
+      {data?.evidence && (
+        <div className={styles.evidenceInline}>
+          <span className={styles.evidenceLabel}>Evidence:</span> {data.evidence}
+        </div>
       )}
     </motion.div>
   );
 }
 
+// ─── Strengths List ───────────────────────────────────────────────────────────
+
+function StrengthsList({ strengths }) {
+  return (
+    <div className={styles.strengthsSection}>
+      <h2 className={styles.strengthsHeading}>IDENTIFIED STRENGTHS</h2>
+      {strengths?.length > 0 ? (
+        <div className={styles.strengthsPills}>
+          {strengths.map((s, i) => (
+            <span key={i} className={styles.strengthPill}>&#10003; {s}</span>
+          ))}
+        </div>
+      ) : (
+        <p className={styles.strengthsEmpty}>
+          No standout strengths identified — focus on the action plan.
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 export default function ScoreTab({ geoAudit }) {
-  const [expandedCards, setExpandedCards] = useState(new Set());
+  if (!geoAudit) return <div className={styles.empty}>Score data not available.</div>;
 
-  if (!geoAudit) {
-    return <div className={styles.empty}>Score data not available.</div>;
-  }
+  const {
+    overall_score = 0,
+    criteria = {},
+    strengths = [],
+    top_weaknesses = [],
+    domain_bonus = 0,
+  } = geoAudit;
 
-  const { overall_score, criteria = {}, strengths = [], top_weaknesses = [] } = geoAudit;
+  const sortedCriteria = CRITERIA
+    .filter((c) => criteria[c.key] != null)
+    .sort((a, b) => (criteria[a.key]?.score ?? 0) - (criteria[b.key]?.score ?? 0));
 
-  const sortedCriteria = Object.entries(criteria).sort(([, a], [, b]) => a.score - b.score);
+  const hasCritical = CRITERIA.some((c) => (criteria?.[c.key]?.score ?? 10) < 5);
 
-  const toggleCard = (key) => {
-    setExpandedCards(prev => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
+  const fadeUp = (delay) => ({
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.4, delay },
+  });
 
   return (
     <div className={styles.page}>
-      {/* Score card FIRST */}
-      <div className={styles.scoreCard}>
-        <div className={styles.topRow}>
-          <div className={styles.gaugeColumn}>
-            <GaugeCircle score={overall_score} />
-            <CitationLikelihood
-              domainScore={criteria.domain_entity_authority?.score ?? 0}
-              overallScore={overall_score}
-            />
-          </div>
-
-          <div className={styles.summary}>
-            {strengths.length > 0 && (
-              <div className={styles.summarySection}>
-                <h3 className={styles.strengthsLabel}>STRENGTHS</h3>
-                <ul className={styles.list}>
-                  {strengths.map((s, i) => (
-                    <li key={i} className={styles.listItem}>
-                      <span className={styles.listCheck}>✓</span>
-                      <span>{s}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {top_weaknesses.length > 0 && (
-              <div className={styles.summarySection}>
-                <h3 className={styles.weaknessesLabel}>WEAKNESSES</h3>
-                <ul className={styles.list}>
-                  {top_weaknesses.map((w, i) => (
-                    <li key={i} className={styles.listItem}>
-                      <span className={styles.listX}>✗</span>
-                      <span>
-                        <strong>{CRITERIA_LABELS[w.criterion] || w.criterion}</strong>
-                        {w.feedback && <>: {w.feedback}</>}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+      <motion.div className={styles.heroCard} {...fadeUp(0)}>
+        <div className={styles.heroLeft}>
+          <GaugeCircle score={overall_score} domain_bonus={domain_bonus} />
         </div>
-      </div>
-
-      {/* Criteria explainer grid */}
-      <div className={styles.criteriaExplainerSection}>
-        <h2 className={styles.criteriaExplainerHeading}>What affects your score</h2>
-        <div className={styles.criteriaExplainerGrid}>
-          {CRITERIA_EXPLAINER.map(({ icon, name, desc }) => (
-            <div key={name} className={styles.criteriaExplainerCard}>
-              <span className={styles.criteriaExplainerCardIcon}>{icon}</span>
-              <span className={styles.criteriaExplainerCardName}>{name}</span>
-              <span className={styles.criteriaExplainerCardDesc}>{desc}</span>
-            </div>
-          ))}
+        <div className={styles.heroDivider} />
+        <div className={styles.heroRight}>
+          <CriteriaScoreList criteria={criteria} />
         </div>
-      </div>
+      </motion.div>
 
-      {/* Criteria breakdown — interactive 2-col card grid */}
-      {sortedCriteria.length > 0 && (
-        <div className={styles.section}>
-          <h2 className={styles.heading}>Criteria Breakdown</h2>
-          <div className={styles.criteriaCardGrid}>
-            {sortedCriteria.map(([key, val], i) => (
-              <CriterionCard
-                key={key}
-                label={CRITERIA_LABELS[key] || key}
-                score={val.score}
-                explanation={val.explanation}
-                index={i}
-                expanded={expandedCards.has(key)}
-                onToggle={() => toggleCard(key)}
-              />
+      <motion.div {...fadeUp(0.1)}>
+        <ScoreCompositionBar criteria={criteria} overall_score={overall_score} domain_bonus={domain_bonus} />
+      </motion.div>
+
+      {hasCritical && top_weaknesses.length > 0 && (
+        <motion.div {...fadeUp(0.2)}>
+          <PriorityFixCallout top_weaknesses={top_weaknesses} criteria={criteria} />
+        </motion.div>
+      )}
+
+      <motion.div {...fadeUp(0.3)}>
+        <div className={styles.criteriaSection}>
+          <div className={styles.criteriaGrid}>
+            {sortedCriteria.map((c, i) => (
+              <CriterionCard key={c.key} criterion={c} data={criteria[c.key]} index={i} />
             ))}
           </div>
+          <div className={styles.domainBonusRow}>
+            {domain_bonus > 0 ? (
+              <span className={styles.domainBonusPositive}>
+                Domain Authority Bonus: +{domain_bonus} applied to final score
+              </span>
+            ) : (
+              <span className={styles.domainBonusNone}>No domain authority bonus applied</span>
+            )}
+          </div>
         </div>
-      )}
+      </motion.div>
+
+      <motion.div {...fadeUp(0.4)}>
+        <StrengthsList strengths={strengths} />
+      </motion.div>
     </div>
   );
 }

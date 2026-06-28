@@ -154,7 +154,7 @@ Return ONLY this JSON:
         "<specific GEO strength 3>"
       ],
       "why_ai_cites_it": ["<bullet 1: one specific reason AI cites this, with **key term** bolded>", "<bullet 2: another specific reason, with **key term** bolded>"],
-      "key_differentiator": "<the single most citation-worthy element of this page>"
+      "key_differentiator": "<the single most citation-worthy structural or factual element of this page — must name a specific format, data point, framework, audience, or unique angle; never say it is 'regularly updated', 'focused on providing', or 'covers the topic broadly'>"
     }
   ],
   "landscape_summary": "<2-3 sentences: what does the best-performing content in this space consistently do well from a GEO perspective?>",

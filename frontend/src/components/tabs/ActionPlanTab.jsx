@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { renderMarkdownBold } from '../../utils/renderMarkdownBold.jsx';
 import styles from './ActionPlanTab.module.css';
 
 function boldNumbers(text) {
@@ -229,24 +230,25 @@ export default function ActionPlanTab({ finalReport }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div>
-            <span className={styles.closingLabel}>STRATEGIC INSIGHT</span>
-            {(() => {
-              const bullets = splitSentences(closing_insight);
-              if (bullets.length <= 1) {
-                return <p className={styles.closingText}><strong>{boldNumbers(closing_insight)}</strong></p>;
-              }
-              return (
-                <ul className={styles.closingBullets}>
-                  {bullets.map((b, i) => (
-                    <li key={i} className={`${styles.closingBulletItem} ${i === 0 ? styles.closingBulletFirst : ''}`}>
-                      {boldNumbers(b)}
-                    </li>
-                  ))}
-                </ul>
-              );
-            })()}
-          </div>
+          <span className={styles.closingLabel}>STRATEGIC INSIGHT</span>
+          {(() => {
+            const sentences = splitSentences(closing_insight);
+            const [lead, ...rest] = sentences.length > 0 ? sentences : [closing_insight];
+            return (
+              <>
+                <p className={styles.closingLead}>{renderMarkdownBold(lead)}</p>
+                {rest.length > 0 && (
+                  <ul className={styles.closingBullets}>
+                    {rest.map((b, i) => (
+                      <li key={i} className={styles.closingBulletItem}>
+                        {renderMarkdownBold(b)}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            );
+          })()}
         </motion.div>
       )}
 

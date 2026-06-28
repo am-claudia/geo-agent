@@ -56,6 +56,8 @@ function StatCard({ label, value, sub, color, delay }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay }}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.97 }}
     >
       <span className={styles.statValue} style={color ? { color } : {}}>
         {value}
@@ -162,7 +164,7 @@ export default function SummaryTab({ geoAudit, finalReport, competitorData, pars
           transition={{ duration: 0.4, delay: 0.15 }}
         >
           {strengths.length > 0 && (
-            <div className={styles.swCard}>
+            <motion.div className={styles.swCard} whileHover={{ y: -2 }}>
               <h3 className={styles.swHeading} style={{ color: '#22c55e' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12"/>
@@ -177,11 +179,11 @@ export default function SummaryTab({ geoAudit, finalReport, competitorData, pars
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           )}
 
           {weaknesses.length > 0 && (
-            <div className={styles.swCard}>
+            <motion.div className={styles.swCard} whileHover={{ y: -2 }}>
               <h3 className={styles.swHeading} style={{ color: '#ef4444' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -199,7 +201,7 @@ export default function SummaryTab({ geoAudit, finalReport, competitorData, pars
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           )}
         </motion.div>
       )}
@@ -223,6 +225,7 @@ export default function SummaryTab({ geoAudit, finalReport, competitorData, pars
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.2 + i * 0.04 }}
+                  whileHover={{ x: 4 }}
                 >
                   <span className={styles.criteriaName}>{CRITERIA_LABELS[key] || key}</span>
                   <div className={styles.criteriaBarWrap}>
@@ -260,6 +263,8 @@ export default function SummaryTab({ geoAudit, finalReport, competitorData, pars
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.35, delay: 0.3 + i * 0.07 }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.99 }}
               >
                 <div className={styles.actionNode} style={{ background: effortColor(item.effort) }}>
                   {item.priority ?? i + 1}
@@ -301,6 +306,8 @@ export default function SummaryTab({ geoAudit, finalReport, competitorData, pars
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.35 + i * 0.06 }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.99 }}
               >
                 <span className={styles.competitorRank}>#{i + 1}</span>
                 <div className={styles.competitorInfo}>

@@ -3,6 +3,12 @@ import styles from './RewritePanel.module.css';
 const EFFORT_COLOR = { low: 'var(--success)', medium: 'var(--warning)', high: 'var(--danger)' };
 const IMPACT_COLOR = { low: 'var(--text-dim)', medium: 'var(--warning)', high: 'var(--success)' };
 
+const isCodeContent = (text) =>
+  (text?.includes('{') && text?.includes('"')) || text?.includes('<script');
+
+const isAsymmetric = (before, after) =>
+  before?.length < 100 && after?.length > 200;
+
 export default function RewritePanel({ rewrites }) {
   const { rewrites: items, additional_quick_wins } = rewrites;
 
@@ -55,6 +61,8 @@ function RewriteItem({ item, index }) {
     geo_signals_added,
   } = item;
 
+  const useStackedLayout = isAsymmetric(before, after) || isCodeContent(after);
+
   return (
     <div className={styles.rewriteItem}>
       <div className={styles.rewriteHeader}>
@@ -66,19 +74,22 @@ function RewriteItem({ item, index }) {
         {context && <p className={styles.rewriteContext}>{context}</p>}
       </div>
 
-      <div className={styles.beforeAfter}>
+      <div className={useStackedLayout ? styles.stackedContainer : styles.beforeAfter}>
         {/* Before */}
         <div className={styles.panel}>
           <div className={styles.panelLabel + ' ' + styles.panelLabelBefore}>
             <span className={styles.panelDot} style={{ background: 'var(--danger)' }} />
             Before
           </div>
-          <blockquote className={`${styles.panelText} ${styles.panelTextBefore}`}>
+          <blockquote className={`${styles.panelText} ${styles.panelTextBefore} ${useStackedLayout ? styles.panelHug : ''}`}>
             {before}
           </blockquote>
         </div>
 
-        <div className={styles.betweenArrow}>→</div>
+        {useStackedLayout
+          ? <div className={styles.stackedArrow}>↓</div>
+          : <div className={styles.betweenArrow}>→</div>
+        }
 
         {/* After */}
         <div className={styles.panel}>
@@ -86,9 +97,13 @@ function RewriteItem({ item, index }) {
             <span className={styles.panelDot} style={{ background: 'var(--success)' }} />
             After
           </div>
-          <blockquote className={`${styles.panelText} ${styles.panelTextAfter}`}>
-            {after}
-          </blockquote>
+          {isCodeContent(after) ? (
+            <pre className={styles.codeBlock}><code>{after}</code></pre>
+          ) : (
+            <blockquote className={`${styles.panelText} ${styles.panelTextAfter}`}>
+              {after}
+            </blockquote>
+          )}
         </div>
       </div>
 

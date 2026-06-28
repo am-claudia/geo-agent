@@ -204,7 +204,7 @@ function FactCarousel() {
       className={styles.factCard}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.9 }}
+      transition={{ duration: 0.5, delay: 0.3 }}
     >
       <div className={styles.factHeader}>✦ Did you know?</div>
       <AnimatePresence mode="wait">
@@ -220,9 +220,6 @@ function FactCarousel() {
         </motion.p>
       </AnimatePresence>
       <p className={styles.factSource}>GEO Research, 2024</p>
-      <div className={styles.factProgressTrack}>
-        <div key={current} className={styles.factProgressFill} />
-      </div>
       <div className={styles.factDots}>
         {GEO_FACTS.map((_, i) => (
           <button
@@ -250,7 +247,8 @@ export default function AgentPipeline({ displayStatuses, agentData, error, url, 
 
   const runningAgent = AGENTS.find(a => displayStatuses[a.key] === 'running');
   const doneCount    = AGENTS.filter(a => displayStatuses[a.key] === 'done').length;
-  const pct = Math.round((doneCount / AGENTS.length) * 100);
+  const runningCount = AGENTS.filter(a => displayStatuses[a.key] === 'running').length;
+  const pct = Math.round(((doneCount + runningCount * 0.5) / AGENTS.length) * 100);
 
   return (
     <div className={styles.shell}>
@@ -281,7 +279,7 @@ export default function AgentPipeline({ displayStatuses, agentData, error, url, 
                 <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
-              <span>{url}</span>
+              <span className={styles.urlPillText}>{url}</span>
             </div>
           </div>
         </motion.div>
@@ -304,6 +302,9 @@ export default function AgentPipeline({ displayStatuses, agentData, error, url, 
             />
           </div>
         </div>
+
+        {/* GEO fact carousel */}
+        <FactCarousel />
 
         {/* Pipeline cards */}
         <div className={styles.pipeline}>
@@ -338,9 +339,6 @@ export default function AgentPipeline({ displayStatuses, agentData, error, url, 
             </div>
           </motion.div>
         )}
-
-        {/* GEO fact carousel */}
-        <FactCarousel />
 
         <p className={styles.footer}>
           Each agent runs in sequence. Results will appear when all 5 complete.

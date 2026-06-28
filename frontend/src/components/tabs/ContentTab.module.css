@@ -1,7 +1,9 @@
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 24px;
 }
 
 .empty {
@@ -11,36 +13,27 @@
   padding: 60px 0;
 }
 
-/* ─── Global toggle/expand controls ─── */
-.chevronIcon {
-  flex-shrink: 0;
-  transition: transform 200ms ease;
+/* ─── Section wrapper ────────────────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.chevronOpen {
-  transform: rotate(180deg);
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-left: 12px;
+  border-left: 3px solid #6366f1;
+  margin-bottom: 0;
+  line-height: 1.4;
+  transition: color var(--transition);
 }
 
-.showMoreBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  padding: 0;
-  font-weight: 500;
-  transition: color 0.15s ease;
-}
+/* ─── Stat grid ──────────────────────────────────────────────────────────── */
 
-.showMoreBtn:hover {
-  color: var(--accent-text);
-}
-
-/* ─── Stats section wrapper ─── */
 .statsSection {
   display: flex;
   flex-direction: column;
@@ -54,78 +47,27 @@
   transition: color var(--transition);
 }
 
-/* ─── Signal detail panel (appears on stat click) ─── */
-.signalDetail {
-  overflow: hidden;
-}
-
-/* ─── Signal Cards (shown in detail panel) ─── */
-
-.signalCard {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-left: 3px solid;
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  transition: background var(--transition), border-color var(--transition);
-}
-
-.signalCardIcon {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.signalCardContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.signalCardName {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  transition: color var(--transition);
-}
-
-.signalCardDesc {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  transition: color var(--transition);
-}
-
-/* ─── Stats ─── */
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
 .statCard {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 20px;
+  padding: 18px 12px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
   cursor: pointer;
   font-family: inherit;
   transition: background var(--transition), border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  min-height: 84px;
 }
 
 .statCard:hover {
@@ -135,58 +77,66 @@
 }
 
 .statCardSelected {
-  border-color: rgba(99, 102, 241, 0.4) !important;
+  border-color: rgba(99, 102, 241, 0.45) !important;
   background: rgba(99, 102, 241, 0.05) !important;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12) !important;
 }
 
 :root[data-theme="dark"] .statCardSelected {
-  border-color: rgba(129, 140, 248, 0.4) !important;
+  border-color: rgba(129, 140, 248, 0.45) !important;
   background: rgba(129, 140, 248, 0.08) !important;
-  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.12);
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.12) !important;
 }
 
 .statValue {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
+.statValueCompact {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
 .statLabel {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-secondary);
   transition: color var(--transition);
+  line-height: 1.2;
 }
 
-/* ─── Section ─── */
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+/* ─── Stat explanation drawer ─────────────────────────────────────────────── */
 
-.sectionTitle {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-  transition: color var(--transition), border-color var(--transition);
-}
-
-/* ─── Details table ─── */
-.details {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+.statExplain {
   background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid #6366f1;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.statExplainText {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  transition: color var(--transition);
+}
+
+/* ─── Page details card ───────────────────────────────────────────────────── */
+
+.detailsCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
   transition: background var(--transition), border-color var(--transition);
 }
 
@@ -199,16 +149,19 @@
   transition: border-color var(--transition);
 }
 
-.detailRow:last-child { border-bottom: none; }
+.detailRow:last-child {
+  border-bottom: none;
+}
 
 .detailKey {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-secondary);
   min-width: 140px;
   flex-shrink: 0;
+  padding-top: 2px;
   transition: color var(--transition);
 }
 
@@ -219,74 +172,474 @@
   transition: color var(--transition);
 }
 
+.detailValStack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.detailUrl {
+  font-size: 13px;
+  color: var(--accent-text);
+  text-decoration: none;
+  word-break: break-all;
+  transition: color var(--transition);
+}
+
+.detailUrl:hover {
+  text-decoration: underline;
+}
+
 .missing {
   color: var(--text-dim);
   font-style: italic;
 }
 
-/* ─── Headings ─── */
-.headings {
+.noteRed {
+  font-size: 12px;
+  color: #ef4444;
+  line-height: 1.5;
+}
+
+.noteGreen {
+  font-size: 12px;
+  color: #10b981;
+  line-height: 1.5;
+}
+
+/* ─── Structural signals grid ─────────────────────────────────────────────── */
+
+.signalsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.sigCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.sigCardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sigIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.sigMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sigLabel {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+
+.sigStatus {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.sigImpl {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  transition: color var(--transition);
+}
+
+/* ─── Content density card ────────────────────────────────────────────────── */
+
+.densityCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.densityHeading {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color var(--transition);
+}
+
+/* ─── Benchmark bar ───────────────────────────────────────────────────────── */
+
+.benchOuter {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.benchLabelRow {
+  position: relative;
+  height: 26px;
+  margin-bottom: 4px;
+}
+
+.benchNeedleLabel {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  bottom: 2px;
+  pointer-events: none;
+}
+
+.benchBarWrap {
+  position: relative;
+}
+
+.benchBar {
+  display: flex;
+  height: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.benchZone {
+  height: 100%;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.benchNeedle {
+  position: absolute;
+  top: -2px;
+  height: 24px;
+  width: 3px;
+  background: var(--bg-base);
+  transform: translateX(-50%);
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+
+:root[data-theme="dark"] .benchNeedle {
+  background: #f0f6fc;
+}
+
+.benchZoneLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.densityMsg {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* ─── First-30% callout ───────────────────────────────────────────────────── */
+
+.firstThirtyBox {
+  border-left: 3px solid #6366f1;
+  background: rgba(99, 102, 241, 0.04);
+  border-radius: 0 6px 6px 0;
+  padding: 12px 14px;
+}
+
+:root[data-theme="dark"] .firstThirtyBox {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.firstThirtyText {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  transition: color var(--transition);
+}
+
+.firstThirtyText strong {
+  color: var(--text-primary);
+}
+
+/* ─── Heading map card ────────────────────────────────────────────────────── */
+
+.headingMapCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.warnCallout {
+  font-size: 13px;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+.headingList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .headingRow {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 14px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
   transition: background var(--transition), border-color var(--transition);
 }
 
-.headingH1 {
-  border-left: 3px solid #9CA3AF;
+.headingRowH1 {
+  padding-left: 10px;
 }
 
-.headingH2 {
-  border-left: 3px solid var(--border);
+.headingRowH2 {
+  padding-left: 26px;
 }
 
-.headingTag {
-  font-size: 11px;
+.headingRowH3 {
+  padding-left: 42px;
+}
+
+.hBadge {
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #6B7280;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  letter-spacing: 0.03em;
+  color: #fff;
+  border-radius: 4px;
   padding: 2px 6px;
-  border-radius: var(--radius-sm);
   flex-shrink: 0;
-  margin-top: 1px;
-  transition: all var(--transition);
+  line-height: 1.4;
 }
 
-.headingText {
-  font-size: 14px;
+.hBadgeH1 { background: #4f46e5; }
+.hBadgeH2 { background: #6366f1; }
+.hBadgeH3 { background: #818cf8; }
+
+.hText {
+  font-size: 13px;
   color: var(--text-primary);
   line-height: 1.4;
+  flex: 1;
   transition: color var(--transition);
 }
 
-.moreNote {
+.hTextH1 { font-weight: 700; font-size: 14px; }
+.hTextH2 { font-weight: 600; }
+.hTextH3 { font-weight: 400; }
+
+.qTag {
+  font-size: 10px;
+  font-weight: 600;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.noHeadings {
   font-size: 13px;
   color: var(--text-dim);
-  padding-left: 4px;
+  font-style: italic;
+}
+
+.expandBtn {
+  background: none;
+  border: 1px dashed var(--border-mid);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 14px;
+  width: 100%;
+  text-align: center;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.expandBtn:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+.headingSummary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-top: 4px;
   transition: color var(--transition);
 }
 
-/* ─── Preview ─── */
-.preview {
+.summSep {
+  color: var(--border-bright);
+}
+
+.summQ {
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* ─── AI view card ────────────────────────────────────────────────────────── */
+
+.aiCard {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  font-size: 14px;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.aiIntro {
+  font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.75;
+  line-height: 1.65;
+  transition: color var(--transition);
+}
+
+.aiToggle {
+  background: transparent;
+  border: 1px dashed var(--border-mid);
+  border-radius: 8px;
+  height: 40px;
+  width: 100%;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.aiToggle:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+.aiInner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.aiWordBadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 4px;
+  padding: 3px 10px;
+  align-self: flex-start;
+}
+
+.aiBox {
+  max-height: 400px;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.aiFirst {
+  color: var(--text-primary);
+  border-left: 2px solid #6366f1;
+  padding-left: 6px;
+  margin-left: -8px;
+}
+
+.aiRest {
+  color: var(--text-secondary);
+}
+
+.aiEmpty {
+  color: var(--text-dim);
   font-style: italic;
-  transition: all var(--transition);
+}
+
+.aiNote {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+  transition: color var(--transition);
+}
+
+/* ─── Mobile ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .signalsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .headingRowH2 {
+    padding-left: 18px;
+  }
+
+  .headingRowH3 {
+    padding-left: 28px;
+  }
+
+  .detailKey {
+    min-width: 100px;
+  }
+
+  .benchZoneLabels {
+    font-size: 10px;
+  }
 }
