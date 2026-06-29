@@ -211,7 +211,7 @@ function GapsSection({ gaps }) {
             className={styles.gapCard}
           >
             <span className={styles.gapNumber}>{i + 1}</span>
-            <p className={styles.gapText}>{gap}</p>
+            <p className={styles.gapText}>{renderMarkdownBold(gap)}</p>
             <span className={styles.gapTag}>Content opportunity</span>
           </motion.div>
         ))}
