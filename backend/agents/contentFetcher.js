@@ -124,9 +124,17 @@ export async function fetchAndParseContent(url) {
     }
   }
 
-  // Truncate to 8 000 chars to keep LLM costs reasonable
-  const truncated = mainContent.length > 8000;
-  if (truncated) mainContent = mainContent.substring(0, 8000) + '\n\n[… content truncated for analysis]';
+  // If aggressive stripping left too little, re-extract from raw HTML without boilerplate filtering
+  let usedFallback = false;
+  if (mainContent.length < 300) {
+    const $raw = load(html);
+    mainContent = $raw('p, h1, h2, h3, h4, li').map((_, el) => $raw(el).text().trim()).get().filter(t => t).join('\n');
+    usedFallback = true;
+  }
+
+  // Truncate to 15 000 chars to keep LLM costs reasonable
+  const truncated = mainContent.length > 15000;
+  if (truncated) mainContent = mainContent.substring(0, 15000) + '\n\n[… content truncated for analysis]';
 
   const wordCount = mainContent.split(/\s+/).filter(w => w.length > 1).length;
 
@@ -177,6 +185,8 @@ export async function fetchAndParseContent(url) {
   }
 
   const questionHeadingCount = [...headings.h2, ...headings.h3].filter(h => h.includes('?')).length;
+
+  console.log(`[ContentFetcher] Content extracted: ${mainContent.length} chars | Title: "${title}" | Fallback used: ${usedFallback}`);
 
   return {
     url,
