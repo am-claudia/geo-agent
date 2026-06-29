@@ -132,11 +132,13 @@ export async function fetchAndParseContent(url) {
     usedFallback = true;
   }
 
-  // Truncate to 15 000 chars to keep LLM costs reasonable
-  const truncated = mainContent.length > 15000;
-  if (truncated) mainContent = mainContent.substring(0, 15000) + '\n\n[… content truncated for analysis]';
-
+  // Word count from full content before truncation so the LLM gets the real figure
   const wordCount = mainContent.split(/\s+/).filter(w => w.length > 1).length;
+
+  // Truncate to 35 000 chars — well within llama-3.3-70b-versatile's 128k context.
+  // The fallback handler in groqWithFallback.js will trim further if the 8b model is used.
+  const truncated = mainContent.length > 35000;
+  if (truncated) mainContent = mainContent.substring(0, 35000) + '\n\n[… content truncated for analysis]';
 
   // Check for lists, FAQs, structured elements (GEO signals)
   const hasLists = $('ul li, ol li').length > 3;

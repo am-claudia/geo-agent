@@ -34,8 +34,8 @@ Title: ${parsedContent.title}
 Meta Description: ${parsedContent.metaDescription}
 Word Count: ${parsedContent.wordCount}
 H1s: ${parsedContent.headings.h1.join(' | ') || 'none'}
-H2s: ${parsedContent.headings.h2.slice(0, 12).join(' | ') || 'none'}
-H3s: ${parsedContent.headings.h3.slice(0, 12).join(' | ') || 'none'}
+H2s: ${parsedContent.headings.h2.slice(0, 30).join(' | ') || 'none'}
+H3s: ${parsedContent.headings.h3.slice(0, 30).join(' | ') || 'none'}
 Has Lists: ${sig.hasLists}
 Has FAQ patterns: ${sig.hasFAQ}
 Has Schema.org markup: ${sig.hasSchema}
