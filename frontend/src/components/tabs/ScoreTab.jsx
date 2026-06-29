@@ -24,17 +24,17 @@ const CRITERIA = [
     howToFix: 'Rewrite section headings as questions ("What is…?", "How do I…?"), and add an FAQ section targeting common queries in your topic area.',
   },
   {
-    key: 'eeat_credibility', label: 'E-E-A-T & Author Credibility', weight: 12, shortLabel: 'E-E-A-T',
+    key: 'eeat_authority', label: 'E-E-A-T & Author Credibility', weight: 12, shortLabel: 'E-E-A-T',
     description: 'Experience, Expertise, Authoritativeness, and Trustworthiness signals. This includes visible author bylines, credentials, author bios, institutional affiliations, and about pages. A score of 0 means none of these signals were detected.',
     howToFix: 'Add an author byline with credentials, link to an author bio page, include an "About" section, and mention any relevant certifications, experience, or institutional backing.',
   },
   {
-    key: 'freshness_signals', label: 'Freshness Signals', weight: 10, shortLabel: 'Freshness',
+    key: 'freshness', label: 'Freshness Signals', weight: 10, shortLabel: 'Freshness',
     description: 'Visible indicators that your content is current — publication dates, "last updated" timestamps, and references to recent events or data. AI systems prefer up-to-date sources, especially for time-sensitive topics. A score of 0 means no freshness signals were found.',
     howToFix: 'Add a visible publication date and "Last updated" timestamp to every page. Reference recent data (within the past 1–2 years) and update content regularly.',
   },
   {
-    key: 'schema_structured_data', label: 'Schema & Structured Data', weight: 8, shortLabel: 'Schema',
+    key: 'schema_markup', label: 'Schema & Structured Data', weight: 8, shortLabel: 'Schema',
     description: 'Machine-readable markup (JSON-LD, microdata) that tells AI systems exactly what your content is — an article, a FAQ, a product, a review. Schema.org markup helps AI parse and classify your content more accurately. A score of 0 means no structured data was detected.',
     howToFix: 'Add JSON-LD markup for Article, FAQPage, or BreadcrumbList schema. Tools like Google\'s Rich Results Test can validate your implementation.',
   },
