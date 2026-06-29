@@ -195,7 +195,7 @@ export async function auditGEOContent(parsedContent) {
     domain_entity_authority: 0.05,
   };
 
-  const c = parsed.criteria;
+  const c = parsed.criteria ?? {};
   const weightedSum = Object.entries(WEIGHTS).reduce(
     (sum, [key, weight]) => sum + (c[key]?.score ?? 0) * weight,
     0
@@ -209,7 +209,7 @@ export async function auditGEOContent(parsedContent) {
   parsed.overall_score = Math.min(10, Math.round((weightedSum + domainBonus) * 10) / 10);
 
   // Sort weaknesses by score ascending
-  parsed.top_weaknesses = parsed.top_weaknesses
+  parsed.top_weaknesses = (parsed.top_weaknesses ?? [])
     .sort((a, b) => a.score - b.score)
     .slice(0, 3);
 

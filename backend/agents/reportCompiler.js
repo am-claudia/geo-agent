@@ -30,8 +30,8 @@ export async function compileReport(agentOutputs) {
     domain_entity_authority: 'Domain Entity Authority',
   };
 
-  const criteriaBlock = Object.entries(geoAudit.criteria)
-    .map(([key, val]) => `${criteriaNames[key] || key}: ${val.score}/10 — ${val.explanation.substring(0, 120)}`)
+  const criteriaBlock = Object.entries(geoAudit.criteria ?? {})
+    .map(([key, val]) => `${criteriaNames[key] || key}: ${val.score}/10 — ${(val.explanation ?? '').substring(0, 120)}`)
     .join('\n');
 
   const domainAuthScore = geoAudit.criteria?.domain_entity_authority?.score ?? 0;
@@ -62,7 +62,7 @@ Competitors: ${competitorData.competitors?.map(c => `${c.domain} — ${c.key_dif
 Gaps: ${competitorData.gap_opportunities?.join('; ')}
 
 === AGENT 4 — REWRITES ===
-${rewrites.rewrites.map(r => `Fixed: ${r.weakness_addressed} — ${r.why_better?.substring(0, 120)}`).join('\n')}
+${(rewrites.rewrites ?? []).map(r => `Fixed: ${r.weakness_addressed} — ${r.why_better?.substring(0, 120)}`).join('\n')}
 Quick wins: ${rewrites.additional_quick_wins?.map(q => q.action).join('; ')}
 
 ${domainAuthNote}

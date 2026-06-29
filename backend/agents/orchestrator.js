@@ -109,9 +109,9 @@ export async function runOrchestrator(url, topic, emit) {
   let rewrites;
   try {
     rewrites = await suggestRewrites(parsedContent, geoAudit.top_weaknesses);
-    console.log('[ORCHESTRATOR] ✓ Agent 4 complete —', rewrites.rewrites.length, 'rewrites generated');
+    console.log('[ORCHESTRATOR] ✓ Agent 4 complete —', (rewrites.rewrites ?? []).length, 'rewrites generated');
     emit('agent_complete', 'rewriteSuggester', {
-      message: `Generated ${rewrites.rewrites.length} targeted before/after rewrites`,
+      message: `Generated ${(rewrites.rewrites ?? []).length} targeted before/after rewrites`,
       preview: { rewriteCount: rewrites.rewrites.length },
     });
   } catch (err) {
