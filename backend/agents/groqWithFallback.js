@@ -17,11 +17,30 @@ function trimForFallback(messages) {
   const budget = maxChars - prefixChars;
 
   return messages.map((msg, i) => {
-    if (i === messages.length - 1 && msg.role === 'user' && msg.content.length > budget) {
-      console.warn(`[groq] Trimming fallback user message from ${msg.content.length} to ${budget} chars to fit TPM limit`);
-      return { ...msg, content: msg.content.slice(0, budget) };
+    if (i !== messages.length - 1 || msg.role !== 'user' || msg.content.length <= budget) return msg;
+
+    // Trim only the MAIN CONTENT section so the criteria definitions and JSON
+    // template at the end of the prompt are always preserved for the LLM.
+    const CONTENT_MARKER = '=== MAIN CONTENT ===\n';
+    const CRITERIA_MARKER = '\n=== CRITERIA ===';
+    const contentStart = msg.content.indexOf(CONTENT_MARKER);
+    const contentEnd   = msg.content.indexOf(CRITERIA_MARKER);
+
+    if (contentStart !== -1 && contentEnd !== -1 && contentStart < contentEnd) {
+      const before        = msg.content.slice(0, contentStart + CONTENT_MARKER.length);
+      const after         = msg.content.slice(contentEnd);
+      const contentBudget = budget - before.length - after.length - 50; // 50 for the truncation note
+
+      if (contentBudget > 300) {
+        const trimmedContent = msg.content.slice(contentStart + CONTENT_MARKER.length, contentStart + CONTENT_MARKER.length + contentBudget);
+        console.warn(`[groq] Fallback: trimmed MAIN CONTENT from ${contentEnd - contentStart - CONTENT_MARKER.length} to ${contentBudget} chars — criteria section preserved`);
+        return { ...msg, content: before + trimmedContent + '\n[… content truncated]\n' + after };
+      }
     }
-    return msg;
+
+    // Last resort: hard-slice (criteria may be lost, but better than a 413)
+    console.warn(`[groq] Fallback: hard-slicing message from ${msg.content.length} to ${budget} chars`);
+    return { ...msg, content: msg.content.slice(0, budget) };
   });
 }
 
