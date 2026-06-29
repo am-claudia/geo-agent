@@ -195,7 +195,13 @@ export async function auditGEOContent(parsedContent) {
     domain_entity_authority: 0.05,
   };
 
-  const c = parsed.criteria ?? {};
+  // Some smaller models drop the "criteria" wrapper and return keys at the top level
+  let c = parsed.criteria;
+  if (!c && parsed.evidence_density) c = parsed;
+  if (!c || Object.keys(c).length === 0) {
+    throw new Error('GEO Auditor received an incomplete response — no criteria scores returned. Please retry.');
+  }
+
   const weightedSum = Object.entries(WEIGHTS).reduce(
     (sum, [key, weight]) => sum + (c[key]?.score ?? 0) * weight,
     0

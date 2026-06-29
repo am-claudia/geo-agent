@@ -3,9 +3,10 @@ import Groq from 'groq-sdk';
 const PRIMARY_MODEL  = 'llama-3.3-70b-versatile';
 const FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
-// llama-3.1-8b-instant TPM limit is 6000 tokens. Use 5700 to leave headroom.
-const FALLBACK_TOKEN_BUDGET = 5700;
-const CHARS_PER_TOKEN = 4; // conservative estimate for English/mixed content
+// llama-3.1-8b-instant TPM limit is 6000 tokens. Use 5500 for headroom.
+// Real-world English averages ~3.3 chars/token; use 3 to stay conservative.
+const FALLBACK_TOKEN_BUDGET = 5500;
+const CHARS_PER_TOKEN = 3;
 
 function trimForFallback(messages) {
   const totalChars = messages.reduce((sum, m) => sum + (m.content?.length ?? 0), 0);
